@@ -30,15 +30,28 @@ const inlinePositioning: InlinePositioning = {
     let placement: Placement;
     let cursorRectIndex = -1;
     let isInternalUpdate = false;
+    let triedPlacements: Array<string> = [];
 
-    const modifier: Modifier<'tippyInlinePositioning', {}> = {
+    const modifier: Modifier<
+      'tippyInlinePositioning',
+      Record<string, unknown>
+    > = {
       name: 'tippyInlinePositioning',
       enabled: true,
       phase: 'afterWrite',
       fn({state}) {
         if (isEnabled()) {
-          if (placement !== state.placement) {
+          if (triedPlacements.indexOf(state.placement) !== -1) {
+            triedPlacements = [];
+          }
+
+          if (
+            placement !== state.placement &&
+            triedPlacements.indexOf(state.placement) === -1
+          ) {
+            triedPlacements.push(state.placement);
             instance.setProps({
+              // @ts-ignore - unneeded DOMRect properties
               getReferenceClientRect: () =>
                 getReferenceClientRect(state.placement),
             });
@@ -49,7 +62,7 @@ const inlinePositioning: InlinePositioning = {
       },
     };
 
-    function getReferenceClientRect(placement: Placement): ClientRect {
+    function getReferenceClientRect(placement: Placement): Partial<DOMRect> {
       return getInlineBoundingClientRect(
         getBasePlacement(placement),
         reference.getBoundingClientRect(),
@@ -83,11 +96,11 @@ const inlinePositioning: InlinePositioning = {
               rect.top - 2 <= event.clientY &&
               rect.bottom + 2 >= event.clientY
           );
-
-          cursorRectIndex = rects.indexOf(cursorRect);
+          const index = rects.indexOf(cursorRect);
+          cursorRectIndex = index > -1 ? index : cursorRectIndex;
         }
       },
-      onUntrigger(): void {
+      onHidden(): void {
         cursorRectIndex = -1;
       },
     };
@@ -98,10 +111,17 @@ export default inlinePositioning;
 
 export function getInlineBoundingClientRect(
   currentBasePlacement: BasePlacement | null,
-  boundingRect: ClientRect,
-  clientRects: ClientRect[],
+  boundingRect: DOMRect,
+  clientRects: DOMRect[],
   cursorRectIndex: number
-): ClientRect {
+): {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+  width: number;
+  height: number;
+} {
   // Not an inline element, or placement is not yet known
   if (clientRects.length < 2 || currentBasePlacement === null) {
     return boundingRect;

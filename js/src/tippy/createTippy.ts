@@ -1,8 +1,9 @@
 import {createPopper, StrictModifiers, Modifier} from '@popperjs/core';
 import {currentInput} from './bindGlobalEventListeners';
-import {isIE} from './browser';
-import {TOUCH_OPTIONS} from './constants';
+import {isIE11} from './browser';
+import {TIPPY_DEFAULT_APPEND_TO, TOUCH_OPTIONS} from './constants';
 import {
+  actualContains,
   div,
   getOwnerDocument,
   isCursorOutsideInteractiveBorder,
@@ -153,13 +154,12 @@ export default function createTippy(
     }
   });
 
-  popper.addEventListener('mouseleave', (event) => {
+  popper.addEventListener('mouseleave', () => {
     if (
       instance.props.interactive &&
       instance.props.trigger.indexOf('mouseenter') >= 0
     ) {
       getDocument().addEventListener('mousemove', debouncedOnMouseMove);
-      debouncedOnMouseMove(event);
     }
   });
 
@@ -214,9 +214,9 @@ export default function createTippy(
     );
   }
 
-  function handleStyles(): void {
+  function handleStyles(fromHide = false): void {
     popper.style.pointerEvents =
-      instance.props.interactive && instance.state.isVisible ? '' : 'none';
+      instance.props.interactive && !fromHide ? '' : 'none';
     popper.style.zIndex = `${instance.props.zIndex}`;
   }
 
@@ -300,16 +300,23 @@ export default function createTippy(
       }
     }
 
+    const actualTarget =
+      (event.composedPath && event.composedPath()[0]) || event.target;
+
     // Clicked on interactive popper
     if (
       instance.props.interactive &&
-      popper.contains(event.target as Element)
+      actualContains(popper, actualTarget as Element)
     ) {
       return;
     }
 
     // Clicked on the event listeners target
-    if (getCurrentTarget().contains(event.target as Element)) {
+    if (
+      normalizeToArray(instance.props.triggerTarget || reference).some((el) =>
+        actualContains(el, actualTarget as Element)
+      )
+    ) {
       if (currentInput.isTouch) {
         return;
       }
@@ -410,7 +417,7 @@ export default function createTippy(
   function on(
     eventType: string,
     handler: EventListener,
-    options: boolean | object = false
+    options: boolean | Record<string, unknown> = false
   ): void {
     const nodes = normalizeToArray(instance.props.triggerTarget || reference);
     nodes.forEach((node) => {
@@ -437,7 +444,7 @@ export default function createTippy(
           on('mouseleave', onMouseLeave as EventListener);
           break;
         case 'focus':
-          on(isIE ? 'focusout' : 'blur', onBlurOrFocusOut as EventListener);
+          on(isIE11 ? 'focusout' : 'blur', onBlurOrFocusOut as EventListener);
           break;
         case 'focusin':
           on('focusout', onBlurOrFocusOut as EventListener);
@@ -598,7 +605,7 @@ export default function createTippy(
         }
       : reference;
 
-    const tippyModifier: Modifier<'$$tippy', {}> = {
+    const tippyModifier: Modifier<'$$tippy', Record<string, unknown>> = {
       name: '$$tippy',
       enabled: true,
       phase: 'beforeWrite',
@@ -624,7 +631,7 @@ export default function createTippy(
       },
     };
 
-    type TippyModifier = Modifier<'$$tippy', {}>;
+    type TippyModifier = Modifier<'$$tippy', Record<string, unknown>>;
     type ExtendedModifiers = StrictModifiers | Partial<TippyModifier>;
 
     const modifiers: Array<ExtendedModifiers> = [
@@ -704,7 +711,7 @@ export default function createTippy(
     const node = getCurrentTarget();
 
     if (
-      (instance.props.interactive && appendTo === defaultProps.appendTo) ||
+      (instance.props.interactive && appendTo === TIPPY_DEFAULT_APPEND_TO) ||
       appendTo === 'parent'
     ) {
       parentNode = node.parentNode;
@@ -717,6 +724,8 @@ export default function createTippy(
     if (!parentNode.contains(popper)) {
       parentNode.appendChild(popper);
     }
+
+    instance.state.isMounted = true;
 
     createPopperInstance();
 
@@ -853,8 +862,8 @@ export default function createTippy(
 
     const prevProps = instance.props;
     const nextProps = evaluateProps(reference, {
-      ...instance.props,
-      ...partialProps,
+      ...prevProps,
+      ...removeUndefinedProps(partialProps),
       ignoreAttributes: true,
     });
 
@@ -993,7 +1002,6 @@ export default function createTippy(
       // popper has been positioned for the first time
       instance.popperInstance?.forceUpdate();
 
-      instance.state.isMounted = true;
       invokeHook('onMount', [instance]);
 
       if (instance.props.animation && getIsDefaultRenderFn()) {
@@ -1043,7 +1051,7 @@ export default function createTippy(
 
     cleanupInteractiveMouseListeners();
     removeDocumentPress();
-    handleStyles();
+    handleStyles(true);
 
     if (getIsDefaultRenderFn()) {
       const {box, content} = getDefaultTemplateChildren();

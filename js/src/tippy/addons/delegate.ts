@@ -39,7 +39,11 @@ function delegate(
 
   const nativeProps = removeProperties(props, ['target']);
   const parentProps = {...nativeProps, trigger: 'manual', touch: false};
-  const childProps = {...nativeProps, showOnCreate: true};
+  const childProps = {
+    touch: defaultProps.touch,
+    ...nativeProps,
+    showOnCreate: true,
+  };
 
   const returnValue = tippy(targets, parentProps);
   const normalizedReturnValue = normalizeToArray(returnValue);
@@ -91,7 +95,7 @@ function delegate(
     node: Element,
     eventType: string,
     handler: EventListener,
-    options: object | boolean = false
+    options: boolean | Record<string, unknown> = false
   ): void {
     node.addEventListener(eventType, handler, options);
     listeners.push({node, eventType, handler, options});

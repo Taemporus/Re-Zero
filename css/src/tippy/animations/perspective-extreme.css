@@ -1,4 +1,4 @@
-/* For tippy.js v6.3.1 | MIT License | (c) 2017-2021 atomiks */
+/* For tippy.js v6.3.7 | MIT License | (c) 2017-2021 atomiks */
 
 .tippy-box[data-animation=perspective-extreme][data-placement^=top] {
 	transform-origin: bottom;
@@ -37,5 +37,5 @@
 	transform: perspective(700px) translateX(-10px) rotateY(90deg);
 }
 .tippy-box[data-animation=perspective-extreme][data-state=hidden] {
-	opacity: .5;
+	opacity: 0.5;
 }

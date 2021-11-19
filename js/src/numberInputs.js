@@ -46,40 +46,93 @@
 			this.save();
 		}
 		// Execute state change handlers
-		this._changeHandlers && this._changeHandlers.forEach(function(action) {
-			try {
-				action.call(this, value);
-			} catch (err) {
-				try {window.console.error(err);} catch (e) {}
-			}
+		this._changeHandlers && this._changeHandlers.forEach(function(entry) {
+			this._callEventListener(entry, value);
 		}, this);
+		// Return new value
+		return value;
 	};
 	NumberInput.prototype.load = function() {
 		var key = this._storageKey("value");
 		var value = key && localStorage.getItem(key);
-		return (typeof value === 'string') ? (this.set(value, false), true) : false;
+		return (typeof value === 'string') ? this.set(value, false) : void 0;
 	};
 	NumberInput.prototype.save = function() {
 		var key = this._storageKey("value");
-		return key ? (localStorage.setItem(key, this.value), true) : false;
+		return key ? (localStorage.setItem(key, this.value), this.value) : void 0;
 	};
 	NumberInput.prototype.unsave = function() {
 		var key = this._storageKey("value");
-		return key ? (localStorage.removeItem(key), true) : false;
+		return key ? (localStorage.removeItem(key), this.value) : void 0;
 	};
 	NumberInput.prototype._storageKey = function(property) {
 		return this.element.id ? ((window.storagePrefix || "") + "/" + property + "/" + this.element.id) : void 0;
 	};
-	NumberInput.prototype.addChangeListener = function(action) {
-		this._changeHandlers.push(action);
+	NumberInput.prototype.addChangeListener = function(action, opts) {
+		typeof opts === 'object' || (opts = {});
+		var entry = {action: action};
+		entry.maxCount = parseInt(opts.maxCount);
+		entry.maxCount < 0 && (entry.maxCount = NaN);
+		entry.count = 0;
+		if (entry.maxCount !== 0) {
+			this._changeHandlers.push(entry);
+			opts.now && this._callEventListener(entry, this.value);
+		}
+		return entry;
 	};
-	NumberInput.prototype.removeChangeListener = function(action) {
-		var idx = this._changeHandlers.indexOf(action);
+	NumberInput.prototype.removeChangeListener = function(entry) {
+		var idx = this._changeHandlers.indexOf(entry);
 		if (idx >= 0) {
 			this._changeHandlers.splice(idx, 1);
+			return true;
+		}
+		return false;
+	};
+	NumberInput.prototype._callEventListener = function(entry) {
+		try {
+			entry.action.apply(this, Array.prototype.slice.call(arguments, 1));
+			entry.count++;
+			if (entry.count >= entry.maxCount) {
+				this.removeChangeListener(entry);
+			}
+		} catch (err) {
+			try {window.console.error(err);} catch (e) {}
 		}
 	};
+	function forSelected(selector, fn) {
+		// Process selector argument
+		if (!selector) {
+			selector = "";
+		} else if (selector instanceof Element || selector instanceof NumberInput) {
+			selector = [selector];
+		}
+		// Prepare arguments
+		var args = Array.prototype.slice.call(arguments, 2);
+		var argProc = function(arg) {
+			return (arg.evalFunc && typeof arg.value === 'function') ? arg.value(this) : arg.value;
+		};
+		// Process matching elements
+		var result = new Map();
+		if (typeof selector === 'string') {
+			// If selector is a string, match NumberInput entries against it
+			NumberInputs.data.forEach(function(input, elt) {
+				if (selector === "" || elt.matches(selector)) {
+					result.set(input, fn.apply(input, args.map(argProc, input)));
+				}
+			});
+		} else {
+			// Otherwise assume an array-like object of Element and/or NumberInput entries
+			Array.prototype.forEach.call(selector, function(elt) {
+				var input = (elt instanceof NumberInput) ? elt : NumberInputs.data.get(elt);
+				if (input) {
+					result.set(input, fn.apply(input, args.map(argProc, input)));
+				}
+			});
+		}
+		return result;
+	}
 	var NumberInputs = {
+		// Initialize NumberInput objects of the given type for the specified elements
 		init: function(selector, type) {
 			// Get matching elements
 			var elts;
@@ -95,54 +148,40 @@
 			// Process list of elements
 			var inputs = [];
 			Array.prototype.forEach.call(elts, function(elt) {
+				// Skip already initialized elements
+				if (NumberInputs.data.has(elt)) {
+					return;
+				}
 				// Filter for 'input' elements with 'number' type
 				if (elt instanceof Element && elt.matches("input[type='number']")) {
 					var input = new NumberInput(elt, type);
 					// Register data for the input element
 					NumberInputs.data.set(elt, input);
-					// Add NumberInput object to returned array
+					// Add NumberInput object to array of initialized objects
 					inputs.push(input);
 				}
 			});
-			// Return array of initialized inputs (may be shorter than an array used as the original argument)
+			// Return array of initialized objects (may be shorter than an array used as the original argument)
 			return inputs;
 		},
 		// Set values while enforcing restrictions
 		set: function(selector, value, save) {
-			// Process selector argument
-			if (!selector) {
-				selector = "";
-			} else if (selector instanceof Element || selector instanceof NumberInput) {
-				selector = [selector];
-			}
-			// Process matching elements
-			if (typeof selector === 'string') {
-				// If selector is a string, match NumberInput entries against it
-				NumberInputs.data.forEach(function(input, elt) {
-					if (selector === "" || elt.matches(selector)) {
-						input.set(
-							(typeof value === 'function') ? value(input) : value,
-							(typeof save === 'function') ? save(input) : save
-						);
-					}
-				});
-			} else {
-				// Otherwise assume an array-like object of Element and/or NumberInput entries
-				Array.prototype.forEach.call(selector, function(elt) {
-					var input = (elt instanceof NumberInput) ? elt : NumberInputs.data.get(elt);
-					if (input) {
-						input.set(
-							(typeof value === 'function') ? value(input) : value,
-							(typeof save === 'function') ? save(input) : save
-						);
-					}
-				});
-			}
+			return forSelected(selector, NumberInput.prototype.set, {value: value, evalFunc: true}, {value: save, evalFunc: true});
 		},
-		unsave: function() {
-			NumberInputs.data.forEach(function(input) {
-				input.unsave();
-			});
+		load: function(selector) {
+			return forSelected(selector, NumberInput.prototype.load);
+		},
+		save: function(selector) {
+			return forSelected(selector, NumberInput.prototype.save);
+		},
+		unsave: function(selector) {
+			return forSelected(selector, NumberInput.prototype.unsave);
+		},
+		addChangeListener: function(selector, action, opts) {
+			return forSelected(selector, NumberInput.prototype.addChangeListener, {value: action}, {value: opts, evalFunc: true});
+		},
+		removeChangeListener: function(selector, entry) {
+			return forSelected(selector, NumberInput.prototype.removeChangeListener, {value: entry, evalFunc: true});
 		},
 		data: new Map()
 	};

@@ -1,0 +1,1358 @@
+/* (c) 2021 Taemporus */
+
+@use "sass:math";
+
+@function max($numbers...) {
+	@return m#{a}x(#{$numbers});
+}
+@function min($numbers...) {
+	@return m#{i}n(#{$numbers});
+}
+$is-touch: "(hover: none), (pointer: coarse)";
+
+/* CONFIGURATION */
+
+// COLORS
+// Background & generic stuff
+$color-background:                    rgb( 44,  44,  44);
+$color-scroll-track:                  rgb(128, 128, 128);
+$color-scroll-thumb:                  rgb( 80,  80,  80);
+$color-scroll-thumb-hover:            rgb( 48,  48,  48);
+$color-scroll-thumb-active:           rgb( 32,  32,  32);
+$color-focus-outline:                 rgb( 34,  34,  34);
+$focus-outline:                       1px auto $color-focus-outline;
+// Navigation
+$color-navbar-edge:                   rgb( 96,  56,  56);
+$color-navbar-background:             rgb( 64,  32,  48);
+$color-navbar-current:                rgb( 80,  32, 160);
+$color-navbar-text:                   rgb(255, 128, 128);
+$color-navbar-highlight:              rgb(255, 255, 255);
+// Menu
+$color-menu-background:               rgb( 93,  45,  61);
+$color-menu-edge:                     rgb( 80,  32,  48);
+$color-menu-text:                     rgb(255, 128, 128);
+$color-menu-highlight:                rgb(255, 255, 255);
+$color-menu-highlight-bg:             rgb(128,  64,  80);
+$color-menu-item-button-light:        rgb(136, 136, 255);
+$color-menu-item-button-dark:         rgb( 85,  85, 160);
+$color-menu-item-button-text:         rgb(255, 255, 255);
+// Main element
+$color-header-background:             rgba(64,  64,  64, 0.9);
+$color-header-text:                   rgb(255,  96,  96);
+$color-content-background:            rgb( 34,  34,  34);
+$color-content-text:                  rgb(224, 224, 224);
+$color-footer-background:             $color-header-background;
+$color-footer-text:                   rgb(128, 128, 208);
+$color-footer-link-text:              rgb(255,  96,  96);
+$color-footer-link-highlight:         rgb(255, 255, 255);
+$color-section-title-bg:              rgb(  0,   0,  85);
+$color-section-title-text:            rgb(255, 136, 136);
+$color-section-title-highlight:       rgb(255, 255, 255);
+$color-content-link-text:             rgb(255, 160, 160);
+$color-content-link-highlight:        rgb(255, 255, 255);
+// Special content elements (quotes etc.)
+$color-quote-bg:                      rgb( 88,  56,  88);
+$color-quote-text:                    inherit;
+$color-subpanel-title:                rgb(255, 160, 160);
+$color-subpanel-highlight:            rgb(255, 255, 255);
+$color-selection-bg:                  rgb( 48,  64, 168);
+$color-chapters-border:               rgb(128, 128, 128);
+$color-chapters-wn-bg:                rgb(160,  16,  16);
+$color-chapters-ln-bg:                rgb( 16,  16, 160);
+$color-chapters-type-text:            rgb(255, 192, 192);
+$color-chapters-num-bg:               rgb( 64,  64,  64);
+$color-chapters-num-text:             rgb(224, 224, 224);
+$color-spoiler-highlight:             rgb(255, 255, 255);
+$color-tooltip-background:            rgb(255,  96,  96);
+$color-tooltip-text:                  rgb(255, 255, 255);
+// Printed
+$color-print-title:                   rgb(255,   0,   0);
+$color-print-section-title:           rgb(255,   0,   0);
+$color-print-content-text:            rgb(  0,   0,   0);
+$color-print-link-text:               inherit;
+$color-print-quote-bg:                rgb(208, 208, 208);
+$color-print-subpanel-title:          rgb(224,   0,   0);
+$color-print-chapters-bg:             rgb(240, 240, 240);
+$color-print-chapters-text:           rgb(  0,   0,   0);
+$color-print-chapters-border:         rgb(  0,   0,   0);
+$color-print-chapters-type-bg:        rgb(208, 208, 208);
+$color-print-spoiler-text:            inherit;
+$color-print-spoiler-alt:             rgb(255,  64,  64);
+
+// FONTS
+// Base font
+$font-size-max-root:                  15px;
+$font-size-min-root:                  12px;
+// Navigation & menu
+$font-size-max-navbar:                1.4em;
+$font-size-min-navbar:                1.1em;
+$font-size-mid-navbar:                2.4vh;
+$font-size-menu-heading:              1.2em;
+$font-size-menu-level1:               1em;
+$font-size-menu-level2:               0.85em;
+$font-size-menu-level3:               0.9em;
+$font-size-menu-item-button:          1rem;
+$opacity-menu-item-button-hidden:     0;
+$opacity-menu-item-button-visible:    0.5;
+$opacity-menu-item-button-selected:   1.0;
+// Main element
+$font-size-main:                      1rem;    // DO NOT CHANGE
+$font-size-header:                    2.2em;
+$font-size-content:                   1em;
+$font-size-footer:                    1em;
+$font-header:                         bold italic #{$font-size-header}/1.4 Times,serif;
+$font-content:                        #{$font-size-content}/1.4 Arial,sans-serif;
+$font-footer:                         #{$font-size-footer}/1.4 Times,serif;
+$font-size-section-title:             1.5em;
+$font-size-heading3:                  1.2em;
+$font-size-heading4:                  1em;
+$font-size-heading5:                  1em;
+$outline-offset-link:                 0.1em;
+$outline-offset-subpanel:             0.3em;
+// Special content elements (quotes etc.)
+$font-style-quote:                    italic;
+$font-style-quote-narration:          normal;
+$font-size-quote-marks:               3em;
+$opacity-quote-marks:                 0.3;
+$font-style-dialogue-speaker:         normal;
+$font-style-dialogue-line:            italic;
+$font-size-chapters-type:             1.1em;
+$font-size-chapters-num:              1em;
+$font-family-chapters-type:           Calibri;
+$font-family-chapters-num:            Calibri;
+$font-size-tooltip:                   1rem;
+$font-tooltip:                        #{$font-size-tooltip}/1.4 Arial,sans-serif;
+// Printed
+$font-size-print-root:                11pt;
+$font-size-print-header:              2em;
+$font-size-print-content:             1em;
+$font-print-header:                   bold italic #{$font-size-print-header}/1.4 Times,serif;
+$font-print-content:                  #{$font-size-print-content}/1.4 Times,serif;
+$font-family-print-chapters-type:     Calibri;
+$font-family-print-chapters-num:      Times,serif;
+
+// ELEMENT DIMENSIONS
+// Generic
+$thickness-scroll:                    12px;
+// Navigation & menu
+$size-x-sidebar-collapsed:            15px;
+$size-x-sidebar-expanded:             40px;
+$padding-x-navbar-item:               0;
+$padding-y-navbar-item:               0.1em;
+$size-x-max-menu:                     28rem;
+$size-x-min-menu:                     25rem;
+$size-x-ratio-menu-icon:              0.6;
+$size-y-menu-icon:                    $size-x-ratio-menu-icon * $size-x-sidebar-expanded;
+$thickness-menu-icon-line:            4px;
+$corner-r-menu-icon-line:             2px;
+$gap-y-menu-icon-line:                ($size-y-menu-icon - $thickness-menu-icon-line) * 0.5;
+$size-x-menu-edge:                    $size-x-sidebar-collapsed;
+$padding-x-menu:                      0;
+$padding-y-menu:                      10px;
+$padding-x-menu-item:                 1.4rem;
+$padding-y-menu-item:                 0.3rem;
+$padding-y-menu-heading:              0.4em;
+$size-x-menu-episode-input:           2.5em;
+$size-x-menu-item-button:             5rem;
+$size-y-menu-item-button:             2em;
+$corner-r-menu-item-button:           0.7rem;
+$padding-x-menu-item-button:          2px;
+$padding-y-menu-item-button:          2px;
+$gap-x-menu-item-button:              0.3rem;
+// Main element
+$size-x-ratio-main:                   0.4;
+$size-x-min-main:                     600px;
+$padding-x-header:                    1.5rem;
+$padding-y-header:                    0.8em;
+$padding-x-footer:                    1.2rem;
+$padding-y-footer:                    0.6rem;
+$padding-x-section-title:             1.2rem;
+$padding-y-section-title:             0.25em;
+$size-x-collapse-icon:                0.8em;
+$size-y-collapse-icon:                0.8em;
+$gap-x-collapse-icon-near:            0.5em;
+$padding-x-section:                   math.div($size-x-collapse-icon, 1em)
+                                        * math.div($font-size-section-title, 1em)
+                                        * math.div($font-size-content, 1em)
+                                        * $font-size-main
+                                      + 2 * $padding-x-section-title;
+$padding-y-section:                   1.2rem;
+$margin-y-content-standard:           0.6rem;
+$margin-top-content-heading3:         1.2rem;
+$margin-bottom-content-heading3:      1.2rem;
+$margin-top-content-heading4:         1.1rem;
+$margin-bottom-content-heading4:      0.6rem;
+$margin-y-content-list-item:          0.3rem;
+$margin-y-content-list-item-heading:  0.2rem;
+// Special content elements (quotes etc.)
+$margin-x-quote:                      1.8rem;
+$corner-r-quote:                      0.6rem;
+$padding-y-quote:                     0.6rem;
+$padding-x-quote-outer:               0.6rem;
+$padding-x-quote-inner:               0.6rem;
+$padding-x-quote-nomark:              1.2rem;
+$margin-y-quote-paragraph:            0.3rem;
+$margin-y-dialogue-line:              0.2em;
+$margin-y-chapters:                   $padding-y-section;
+$padding-x-chapters-type:             0.1rem;
+$padding-y-chapters-type:             0.3rem;
+$padding-x-chapters-num:              0.6rem;
+$padding-y-chapters-num:              0.3rem;
+$corner-r-tooltip:                    0.5rem;
+// Printed
+$size-x-print-column:                 520px;
+$gap-x-print-column:                  0;
+$padding-y-print-section-title:       0.2rem;
+
+// ANIMATION
+$transition-sidebar-expand:           0.3s;
+$transition-menu-open:                0.6s;
+
+/* STYLESHEET */
+
+/* Basic structure */
+:root {
+	font-size: $font-size-max-root;
+}
+@media (max-width: $size-x-min-main - 1px) {
+	:root {font-size: math.div($font-size-max-root, $size-x-min-main) * 100vw}
+}
+@media (max-width: math.div($font-size-min-root, $font-size-max-root) * $size-x-min-main - 1px) {
+	:root {font-size: $font-size-min-root}
+}
+body {
+	background-color: $color-background;
+	background-image: url(../img/background.jpg);
+	background-size: 100% auto;
+	background-repeat: repeat-y;
+	background-attachment: fixed;
+	background-position: center;
+}
+.main {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	position: relative;
+	margin: 0 auto;
+	width: 100% * $size-x-ratio-main;
+	min-width: $size-x-min-main;
+	min-height: 100vh;
+	font-size: $font-size-main;
+}
+@media (max-width: $size-x-min-main - 1px) {
+	.main {
+		width: 100%;
+		min-width: 100%;
+	}
+}
+body::-webkit-scrollbar {
+	width: $thickness-scroll;
+	height: $thickness-scroll;
+}
+body::-webkit-scrollbar-track {
+	border-radius: $thickness-scroll * 0.5;
+	background: $color-scroll-track;
+}
+body::-webkit-scrollbar-thumb {
+	border-radius: $thickness-scroll * 0.5;
+	background: $color-scroll-thumb;
+}
+body::-webkit-scrollbar-thumb:hover {
+	background: $color-scroll-thumb-hover;
+}
+body::-webkit-scrollbar-thumb:active {
+	background: $color-scroll-thumb-active;
+}
+html, body {
+	scrollbar-width: auto;
+	scrollbar-color: $color-scroll-track $color-scroll-thumb;
+}
+:focus-visible {
+	outline: $focus-outline;
+}
+.focus-visible {
+	outline: $focus-outline;
+}
+[tabindex="-1"]:focus-visible {
+	outline: none;
+}
+[tabindex="-1"].focus-visible {
+	outline: none;
+}
+.no-break {
+	white-space: nowrap;
+}
+/* Navigation */
+#navbar_container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: (1 - $size-x-ratio-main) * 0.5 * 100%;
+	height: 100vh;
+	z-index: 11;
+	overflow: hidden;
+
+	@media (max-width: math.div($size-x-min-main, $size-x-ratio-main)) {
+		width: calc(50% - $size-x-min-main * 0.5);
+	}
+}
+#navbar {
+	position: absolute;
+	top: 0;
+	right: 0;
+	box-sizing: border-box;
+	padding: 0 1px;
+	width: $size-x-sidebar-collapsed;
+	height: 100vh;
+	background-color: $color-navbar-edge;
+	transition: $transition-sidebar-expand;
+	transition-property: width, opacity;
+
+	&:empty {
+		display: none;
+	}
+	&.show {
+		width: $size-x-sidebar-expanded;
+	}
+}
+#navbar_contents {
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-row-gap: 1px;
+	grid-template-columns: 100%;
+	font-size: $font-size-max-navbar;
+	font-size: min(max($font-size-min-navbar, $font-size-mid-navbar), $font-size-max-navbar);
+	pointer-events: none;
+	transition: inherit;
+	transition-property: none;
+	overflow-y: scroll;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	#navbar.show & {
+		pointer-events: auto;
+	}
+}
+@media (max-width: $size-x-min-main + 2 * $size-x-sidebar-expanded) {
+	#navbar_container {
+		width: $size-x-sidebar-expanded;
+		visibility: hidden;
+	}
+	#navbar {
+		left: 0;
+		right: auto;
+		visibility: visible;
+		opacity: 0;
+		transition-property: width, opacity;
+
+		&.show {
+			opacity: 1;
+		}
+	}
+}
+#navbar .navitem {
+	/*position: static;*/
+	margin: 0;
+	border: none;
+	padding: $padding-y-navbar-item $padding-x-navbar-item;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	outline: none;
+	background-color: $color-navbar-background;
+	cursor: pointer;
+	font-family: "Arial", sans-serif;
+	transition: inherit;
+	transition-property: none;
+	user-select: none;
+
+	&.current {
+		background-color: $color-navbar-current;
+	}
+}
+.navtext {
+	width: 100%;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	opacity: 0;
+	transition: inherit;
+	transition-property: opacity;
+
+	#navbar.show & {
+		opacity: 1;
+	}
+
+	@mixin normal    {color: $color-navbar-text;}
+	@mixin highlight {color: $color-navbar-highlight;}
+
+	@include normal;
+	.navitem:hover > &,
+	.navitem.focus-visible > & {
+		@include highlight;
+	}
+	@media #{$is-touch} {
+		.navitem:hover > & {
+			@include normal;
+		}
+		.navitem:active > & {
+			@include highlight;
+		}
+	}
+}
+.navicon {
+	width: 100%;
+	height: 1em;
+	background-repeat: no-repeat;
+	background-position: center 0;
+	background-size: auto 3em;
+	opacity: 0;
+	transition: inherit;
+	transition-property: opacity;
+
+	#navbar.show & {
+		opacity: 1;
+	}
+
+	@mixin normal    {background-position-y: 0;}
+	@mixin highlight {background-position-y: -2em;}
+
+	@include normal;
+	.navitem:hover > &,
+	.navitem.focus-visible > & {
+		@include highlight;
+	}
+	@media #{$is-touch} {
+		.navitem:hover > & {
+			@include normal;
+		}
+		.navitem:active > & {
+			@include highlight;
+		}
+	}
+}
+#icon_info        {background-image: url(../img/icons/info.svg);}
+#icon_manual      {background-image: url(../img/icons/manual.svg);}
+#icon_speculation {background-image: url(../img/icons/lightbulb.svg);}
+#icon_book        {background-image: url(../img/icons/book.svg);}
+/* Menu */
+#menu_container {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: (1 - $size-x-ratio-main) * 0.5 * 100%;
+	height: 100vh;
+	z-index: 10;
+	overflow: hidden;
+
+	@media (max-width: math.div($size-x-min-main, $size-x-ratio-main)) {
+		width: calc(50% - $size-x-min-main * 0.5);
+	}
+}
+#menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: calc(100% - $size-x-sidebar-expanded);
+	max-width: $size-x-max-menu;
+	min-width: $size-x-min-menu;
+	height: 100vh;
+	transform: translate(-100%, 0);
+	background-color: $color-menu-background;
+	transition: $transition-menu-open;
+	transition-property: transform;
+
+	#menu_container.show & {
+		transform: none;
+	}
+}
+#menu_button_wrapper {
+	position: absolute;
+	box-sizing: border-box;
+	left: 100%;
+	width: $size-x-sidebar-collapsed;
+	height: 100%;
+	overflow: hidden;
+	padding: 0 1px;
+	background-color: $color-menu-background;
+	transition: $transition-sidebar-expand;
+	transition-property: width;
+
+	&.show,
+	#menu_container.show & {
+		width: $size-x-sidebar-expanded;
+	}
+	#menu_container.show & {
+		padding: 0;
+	}
+}
+#menu_button {
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	background-color: $color-menu-edge;
+	cursor: pointer;
+	outline: none;
+	pointer-events: none;
+
+	#menu_button_wrapper.show &,
+	#menu_container.show & {
+		pointer-events: auto;
+	}
+
+	> div {
+		position: absolute;
+		left: (1 - $size-x-ratio-menu-icon) * 0.5 * 100%;
+		width: $size-x-ratio-menu-icon * 100%;
+		height: $thickness-menu-icon-line;
+		border-radius: $corner-r-menu-icon-line;
+		background-color: $color-menu-text;
+		visibility: hidden;
+		transition: $transition-menu-open;
+		transition-property: opacity, transform;
+
+		#menu_button_wrapper.show & {
+			background-color: $color-menu-highlight;
+		}
+		#menu_button_wrapper.show &,
+		#menu_container.show & {
+			visibility: visible;
+		}
+
+		&:nth-child(1) {
+			bottom: calc(50% + (0.5 * $size-y-menu-icon - $thickness-menu-icon-line));
+			#menu_container.show & {
+				transform: translate(0,$gap-y-menu-icon-line) rotate(45deg);
+			}
+		}
+		&:nth-child(2) {
+			top: calc(50% - (0.5 * $thickness-menu-icon-line));
+			#menu_container.show & {
+				opacity: 0;
+			}
+		}
+		&:nth-child(3) {
+			top: calc(50% + (0.5 * $size-y-menu-icon - $thickness-menu-icon-line));
+			#menu_container.show & {
+				transform: translate(0,-$gap-y-menu-icon-line) rotate(-45deg);
+			}
+		}
+	}
+}
+#menu_content_wrapper {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+#menu_content {
+	position: relative;
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	padding: $padding-y-menu $padding-x-menu;
+	border-left: $size-x-menu-edge solid $color-menu-edge;
+	visibility: hidden;
+	user-select: none;
+	background-color: $color-menu-background;
+	color: $color-menu-text;
+	font-size: 1.4em;
+	font-family: "Arial", sans-serif;
+	transition: $transition-menu-open;
+	transition-property: visibility;
+	overflow-y: scroll;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+
+	#menu_container.show & {
+		visibility: visible;
+	}
+}
+@media (max-width:
+	$size-x-min-main
+	+ 2 * (
+		$size-x-sidebar-expanded
+		+ math.div($size-x-min-menu, 1rem) * $font-size-max-root
+	)
+	+ $thickness-scroll
+) {
+	#menu_container {
+		overflow: visible;
+		visibility: hidden;
+	}
+	#menu {
+		left: auto;
+		right: 100%;
+		transform: none;
+		background: transparent;
+		overflow: visible;
+		visibility: hidden;
+		transition-property: right;
+
+		#menu_container.show & {
+			right: $size-x-sidebar-expanded;
+		}
+	}
+	#menu_button_wrapper {
+		visibility: visible;
+	}
+	#menu_content {
+		transform: translate(100%,0);
+		transition: $transition-menu-open;
+		transition-property: transform, visibility;
+
+		#menu_container.show & {
+			transform: none;
+		}
+	}
+}
+@media (max-width: $size-x-min-main + 2 * $size-x-sidebar-expanded) {
+	#menu_container {
+		position: fixed;
+		top: 0;
+		right: 0;
+	}
+	#menu {
+		right: $size-x-sidebar-expanded;
+		transition-property: none;
+	}
+	#menu_button_wrapper {
+		width: $size-x-sidebar-expanded;
+		transform: translate($size-x-sidebar-expanded - $size-x-sidebar-collapsed, 0);
+		opacity: 0;
+		transition-property: transform, opacity;
+
+		&.show,
+		#menu_container.show & {
+			transform: none;
+			opacity: 1;
+		}
+	}
+}
+@media (max-width:
+	$size-x-sidebar-expanded
+	+ math.div($size-x-min-menu, 1rem) * $font-size-min-root
+) {
+	#menu {
+		width: calc(100vw - $size-x-sidebar-expanded);
+		min-width: calc(100vw - $size-x-sidebar-expanded);
+		max-width: calc(100vw - $size-x-sidebar-expanded);
+	}
+}
+.menu-item {
+	display: block;
+	position: relative;
+	padding: $padding-y-menu-item $padding-x-menu-item;
+	border: none;
+	outline: none;
+	text-align: left;
+	background: transparent;
+
+	@mixin normal    {color: $color-menu-text;}
+	@mixin highlight {color: $color-menu-highlight;}
+	
+	@include normal;
+
+	&:hover,
+	&.focus-visible-within {
+		background-color: $color-menu-highlight-bg;
+	}
+	&.interactive {
+		cursor: pointer;
+	
+		&:hover,
+		&.focus-visible {
+			@include highlight;
+		}
+		@media #{$is-touch} {
+			&:hover {
+				@include normal;
+			}
+			&:active {
+				@include highlight;
+			}
+		}
+	}
+}
+.submenu {
+	> .submenu-content {
+		font-size: $font-size-menu-level1;
+		.menu-item {
+			padding-left: $padding-x-menu-item;
+		}
+	}
+	.submenu {
+		> .submenu-content {
+			font-size: $font-size-menu-level2;
+			.menu-item {
+				padding-left: 2 * $padding-x-menu-item;
+			}
+		}
+		.submenu {
+			> .submenu-content {
+				font-size: $font-size-menu-level3;
+				.menu-item {
+					padding-left: 3 * $padding-x-menu-item;
+				}
+			}
+		}
+	}
+}
+.submenu-main > .menu-item {
+	padding-top: $padding-y-menu-heading;
+	padding-bottom: $padding-y-menu-heading;
+	font-size: $font-size-menu-heading;
+	font-weight: bold;
+}
+.menu-item-button {
+	position: absolute;
+	margin: 0;
+	padding: $padding-y-menu-item-button $padding-x-menu-item-button;
+	border: none;
+	border-radius: $corner-r-menu-item-button;
+	outline: none;
+	top: 50%;
+	transform: translate(0,-50%);
+	width: $size-x-menu-item-button;
+	height: $size-y-menu-item-button;
+	text-align: center;
+	font-size: $font-size-menu-item-button;
+	background-color: mix($color-menu-item-button-light, $color-menu-item-button-dark);
+	background-image: linear-gradient(to bottom, $color-menu-item-button-light, $color-menu-item-button-dark);
+	color: $color-menu-item-button-text;
+	cursor: pointer;
+
+	&:nth-last-child(1) {
+		right: $gap-x-menu-item-button;
+	}
+	&:nth-last-child(2) {
+		right: 2 * $gap-x-menu-item-button + $size-x-menu-item-button;
+	}
+
+	opacity: $opacity-menu-item-button-hidden;
+	.menu-item:hover > &,
+	.menu-item.focus-visible-within > & {
+		opacity: $opacity-menu-item-button-visible;
+	}
+	.menu-item > &:hover,
+	.menu-item > &.focus-visible {
+		opacity: $opacity-menu-item-button-selected;
+	}
+	&:active {
+		background-color: $color-menu-item-button-light;
+		background-image: linear-gradient(to bottom, $color-menu-item-button-dark, $color-menu-item-button-light);
+	}
+
+	@media #{$is-touch} {
+		.menu-item > &:hover {
+			opacity: $opacity-menu-item-button-visible;
+		}
+		.menu-item > &:active {
+			opacity: $opacity-menu-item-button-selected;
+		}
+	}
+}
+#menu input[type='number'] {
+	background-color: $color-menu-edge;
+	color: $color-menu-text;
+	border: 1px solid currentColor;
+	outline: none;
+
+	&:focus {
+		color: $color-menu-highlight;
+	}
+}
+#spoiler_episode_limit {
+	width: $size-x-menu-episode-input;
+}
+#menu a[href] {
+	text-decoration: none;
+	outline: none;
+}
+/* Header */
+.header {
+	padding: 0 $padding-x-header;
+	background-color: $color-header-background;
+}
+.title {
+	margin: 0;
+	padding: $padding-y-header 0;
+	text-align: center;
+	font: $font-header;
+	color: $color-header-text;
+}
+/* Content */
+.content {
+	flex-grow: 1;
+	background-color: $color-content-background;
+	text-align: justify;
+	hyphens: auto;
+	font: $font-content;
+}
+h2 {
+	margin: 0;
+	padding: 0;
+	font-size: $font-size-section-title;
+	font-weight: bold;
+}
+h3 {
+	font-size: $font-size-heading3;
+	font-weight: bold;
+}
+h4 {
+	font-size: $font-size-heading4;
+	font-weight: bold;
+}
+h5 {
+	font-size: $font-size-heading5;
+	font-weight: bold;
+}
+.panel-heading {
+	.panel-major > & {
+		padding: $padding-y-section-title $padding-x-section-title;
+		border: none;
+		text-align: left;
+		font-size: $font-size-section-title;
+		background-color: $color-section-title-bg;
+		> * {
+			font-size: 1em;
+		}
+	}
+	.panel-minor > & {
+		padding: 0;
+		border: none;
+		text-align: left;
+		background: transparent;
+	}
+}
+.panel-body {
+	.panel-major > & {
+		padding: $padding-y-section $padding-x-section;
+		color: $color-content-text;
+	}
+	div, p, ol, ul {
+		margin: $margin-y-content-standard 0;
+	}
+	h3 {
+		margin: $margin-top-content-heading3 0 $margin-bottom-content-heading3 0;
+	}
+	h4 {
+		margin: $margin-top-content-heading4 0 $margin-bottom-content-heading4 0;
+	}
+	li {
+		margin: $margin-y-content-list-item 0;
+
+		> h4 {
+			margin-bottom: $margin-y-content-list-item-heading;
+			+ p {
+				margin-top: $margin-y-content-list-item-heading;
+			}
+		}
+		> p.highlight {
+			margin-top: $margin-y-content-standard;
+			margin-bottom: $margin-y-content-standard;
+		}
+		> ul:first-of-type {
+			margin-top: $margin-y-content-list-item;
+		}
+		> .collapsible:not(.show):last-child:not(:first-child) {
+			margin-bottom: $margin-y-content-standard;
+		}
+	}
+	*:first-child {
+		margin-top: 0;
+	}
+	*:last-child {
+		margin-bottom: 0;
+	}
+	
+	.highlight {
+		text-align: center;
+		font-weight: bold;
+	}
+}
+em {
+	font-style: italic;
+}
+.strong {
+	font-weight: bold;
+}
+.term, .thought, .othertitle {
+	font-style: italic;
+}
+.line {
+	display: inline-block;
+}
+@mixin format-links {
+	a[href],
+	a[data-goto],
+	.text-button {
+		@content;
+	}
+}
+.main {
+	@include format-links {
+		margin: 0;
+		padding: 0;
+		border: none;
+		background: transparent;
+		text-decoration: underline;
+		outline-offset: $outline-offset-link;
+		cursor: pointer;
+
+		&:hover,
+		&:active,
+		&.focus-visible {
+			text-decoration: none;
+		}
+		@media #{$is-touch} {
+			&.arming {
+				text-decoration: underline;
+			}
+			&.focus-visible {
+				text-decoration: none;
+			}
+		}
+	}
+}
+@mixin link-colors($normal, $highlight) {
+	@include format-links {
+		color: $normal;
+		&:active,
+		&.focus-visible {
+			color: $highlight;
+		}
+		@media #{$is-touch} {
+			&.arming {
+				color: $highlight;
+			}
+		}
+	}
+}
+.content {
+	@include link-colors($color-content-link-text, $color-content-link-highlight);
+
+	.quote,
+	.excerpt {
+		margin-left: $margin-x-quote;
+		margin-right: $margin-x-quote;
+		border-radius: $corner-r-quote;
+		background-color: $color-quote-bg;
+
+		p {
+			margin: $margin-y-quote-paragraph 0;
+		}
+	}
+	.quote {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		padding: $padding-y-quote $padding-x-quote-outer;
+		font-style: $font-style-quote;
+
+		> * {
+			flex-shrink: 1;
+		}
+		&::before {
+			content: open-quote;
+			margin-right: $padding-x-quote-inner;
+		}
+		&::after {
+			content: close-quote;
+			margin-left: $padding-x-quote-inner;
+		}
+		&::before,
+		&::after {
+			font-size: $font-size-quote-marks;
+			font-family: serif;
+			opacity: $opacity-quote-marks;
+		}
+	}
+	.excerpt {
+		padding: $padding-y-quote $padding-x-quote-nomark;
+		font-style: $font-style-quote-narration;
+		q {
+			font-style: $font-style-quote;
+		}
+	}
+	li:not(:last-child) {
+		> .quote,
+		> .excerpt {
+			margin-bottom: $margin-y-content-standard;
+		}
+	}
+}
+.dialogue {
+	> p {
+		margin-top: $margin-y-dialogue-line;
+		margin-bottom: $margin-y-dialogue-line;
+
+		&:first-child {
+			margin-top: 0;
+		}
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+.speaker {
+	font-style: $font-style-dialogue-speaker;
+}
+.speaker::after {
+	content: ":";
+}
+.spoken-line {
+	font-style: $font-style-dialogue-line;
+
+	&::before {
+		content: open-quote;
+	}
+	&::after {
+		content: close-quote;
+	}
+}
+::selection {
+	background: $color-selection-bg;
+}
+/* Chapter tables */
+.chapters {
+	margin-bottom: $margin-y-chapters;
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	border: none;
+
+	td {
+		border: 1px solid $color-chapters-border;
+
+		&:nth-of-type(odd) {
+			width: 8%;
+			padding: $padding-y-chapters-type $padding-x-chapters-type;
+			text-align: center;
+			font-size: $font-size-chapters-type;
+			font-family: $font-family-chapters-type;
+			line-height: 1;
+			color: $color-chapters-type-text;
+			word-break: break-all;
+		}
+		&:nth-of-type(1) {
+			background: $color-chapters-wn-bg;
+		}
+		&:nth-of-type(3) {
+			background: $color-chapters-ln-bg;
+		}
+		&:nth-of-type(even) {
+			padding: $padding-y-chapters-num $padding-x-chapters-num;
+			text-align: center;
+			font-size: $font-size-chapters-num;
+			font-family: $font-family-chapters-num;
+			background: $color-chapters-num-bg;
+			color: $color-chapters-num-text;
+		}
+	}
+}
+/* Spoilers */
+.inline-spoiler {
+	cursor: pointer;
+
+	&.arming,
+	&.focus-visible {
+		color: $color-spoiler-highlight;
+	}
+	&:not(.show) {
+		&::selection,
+		& *::selection {
+			color: transparent;
+		}
+	}
+}
+/* Footer */
+.footer {
+	padding: $padding-y-footer $padding-x-footer;
+	text-align: center;
+	font: $font-footer;
+	background-color: $color-footer-background;
+	color: $color-footer-text;
+
+	@include link-colors($color-footer-link-text, $color-footer-link-highlight);
+}
+/* Collapsible elements */
+.collapsible {
+	position: relative;
+
+	> .collapse-toggle {
+		position: relative;
+		box-sizing: border-box;
+		width: 100%;
+		cursor: pointer;
+		user-select: none;
+
+		@mixin set-highlight($touchHover: false) {
+			@content($on: false);
+			@at-root
+			&:hover,
+			&.focus-visible {
+				@content($on: true);
+			}
+			@media #{$is-touch} {
+				&:hover {
+					@content($on: $touchHover);
+				}
+				&:active {
+					@content($on: true);
+				}
+			}
+		}
+
+		@at-root .panel-major#{&} {
+			@include set-highlight using ($on) {
+				@if $on {color: $color-section-title-highlight;}
+				@else   {color: $color-section-title-text;}
+			};
+			outline: none;
+			padding-right: math.div($size-x-collapse-icon, 1em) * math.div($font-size-section-title, 1em) * math.div($font-size-content, 1em) * $font-size-main + 2 * $padding-x-section-title;
+		}
+		@at-root
+		.panel-minor#{&},
+		.submenu#{&} {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: nowrap;
+			justify-content: flex-start;
+			align-items: center;
+		}
+		@at-root .panel-minor#{&} {
+			@include set-highlight using ($on) {
+				@if $on {color: $color-subpanel-highlight;}
+				@else   {color: $color-subpanel-title;}
+			};
+			@include set-highlight($touchHover: true) using ($on) {
+				@at-root #{selector-nest(#{selector-append(".show",&)}, "~ .collapse-content")} {
+					@if $on {color: $color-subpanel-highlight;}
+					@else   {color: inherit;}
+
+					@if $on {outline: $focus-outline;}
+					@else   {outline: none;}
+				}
+			};
+
+			outline-offset: $outline-offset-subpanel;
+			&.focus-visible {
+				outline: $focus-outline;
+			}
+			&:not(.noprefix) > div::before {
+				content: "Show ";
+				@at-root .show#{&} {
+					content: "Hide ";
+				}
+			}
+		}
+		@at-root .submenu#{&} {
+			@include set-highlight using ($on) {
+				@if $on {color: $color-menu-highlight;}
+				@else   {color: $color-menu-text;}
+			};
+			outline: none;
+			@at-root .submenu-main#{&} {
+				justify-content: center;
+			}
+		}
+		& > div {
+			@at-root .panel-minor#{&} {
+				display: inline-block;
+				vertical-align: middle;
+				flex-grow: 0;
+				flex-shrink: 1;
+			}
+		}
+		&::after {
+			width: $size-x-collapse-icon;
+			height: $size-y-collapse-icon;
+			background-image: url(../img/icons/toggle.svg);
+			background-repeat: no-repeat;
+			background-position: 0 0;
+			background-size: (2 * $size-y-collapse-icon) (2 * $size-y-collapse-icon);
+			content: "";
+
+			@at-root .panel-major#{&} {
+				position: absolute;
+				top: 50%;
+				right: $padding-x-section-title;
+				transform: translate(0,-50%);
+			}
+			@at-root
+			.panel-minor#{&},
+			.submenu#{&} {
+				display: block;
+				margin-left: $gap-x-collapse-icon-near;
+				flex-shrink: 0;
+			}
+
+			@at-root .show#{&} {
+				background-position-x: -$size-x-collapse-icon;
+			}
+		}
+
+		@include set-highlight using ($on) {
+			@if $on {&::after {background-position-y: -$size-y-collapse-icon;}}
+			@else   {&::after {background-position-y: 0;}}
+		}
+	}
+	> .collapse-content {
+		@at-root .panel-minor#{&} {
+			outline-offset: $outline-offset-subpanel;
+		}
+	}
+}
+/* Header overlay */
+.header-overlay {
+	z-index: 5;
+}
+/* Tooltips */
+.tippy-box {
+	text-align: center;
+	border-radius: $corner-r-tooltip;
+	font: $font-tooltip;
+	background-color: $color-tooltip-background;
+	color: $color-tooltip-text;
+	user-select: none;
+}
+.tippy-arrow {
+	color: $color-tooltip-background;
+}
+/* Print */
+@media print {
+	/* Hiding interactive elements */
+	#navbar_container,
+	#menu_container,
+	.tippy-box,
+	.header-overlay {
+		display: none !important;
+	}
+	.collapsible > .collapse-toggle {
+		&::after {
+			display: none !important;
+		}
+		@at-root .panel-minor#{&} {
+			> *::before {
+				display: none !important;
+			}
+			@at-root .show#{&} {
+				display: none !important;
+			}
+			@at-root :not(.show)#{&} {
+				> *::first-letter {
+					text-transform: uppercase;
+				}
+				> *::after {
+					content: " (hidden)";
+				}
+			}
+		}
+	}
+	.footer {
+		display: none !important;
+	}
+	/* Printer-friendly graphics */
+	body {
+		background: transparent !important;
+	}
+	.header {
+		background: transparent !important;
+	}
+	.title {
+		color: $color-print-title !important;
+	}
+	.content {
+		background: transparent !important;
+	}
+	.panel-major {
+		> .panel-heading {
+			background: transparent !important;
+			color: $color-print-title !important;
+			padding-top: $padding-y-print-section-title !important;
+			padding-bottom: $padding-y-print-section-title !important;
+		}
+		> .panel-body {
+			color: $color-print-content-text !important;
+		}
+	}
+	.panel-minor {
+		> .panel-heading {
+			color: $color-print-subpanel-title !important;
+		}
+	}
+	.chapters {
+		* {
+			background: $color-print-chapters-bg !important;
+			color: $color-print-chapters-text !important;
+			border-color: $color-print-chapters-border !important;
+		}
+		td {
+			&:nth-of-type(odd) {
+				background: $color-print-chapters-type-bg !important;
+			}
+		}
+	}
+	a {
+		color: $color-print-link-text !important;
+		text-decoration: none !important;
+
+		&[href]::after {
+			content: " [" attr(href) "]";
+		}
+	}
+	.quote,
+	.excerpt {
+		background: $color-print-quote-bg !important;
+	}
+	.quote::before,
+	.quote::after {
+		opacity: 1 !important;
+	}
+	.inline-spoiler {
+		color: $color-print-spoiler-text !important;
+
+		&:not(.show) {
+			font-size: 0em !important;
+			color: $color-print-spoiler-alt !important;
+			&::after {
+				font-size: 1rem;
+				content: "[hidden: " attr(data-spoiler) "]";
+			}
+		}
+	}
+	/* Structure */
+	.main {
+		width: 100% !important;
+	}
+	.content {
+		column-width: $size-x-print-column;
+		column-gap: $gap-x-print-column;
+	}
+	/* Fonts */
+	:root {
+		font-size: $font-size-print-root !important;
+	}
+	.title {
+		font: $font-print-header !important;
+	}
+	.content {
+		font: $font-print-content !important;
+	}
+	.chapters td:nth-of-type(odd) {
+		font-family: $font-family-print-chapters-type !important;
+	}
+	.chapters td:nth-of-type(even) {
+		font-family: $font-family-print-chapters-num !important;
+	}
+}

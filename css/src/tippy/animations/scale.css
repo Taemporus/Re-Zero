@@ -1,4 +1,4 @@
-/* For tippy.js v6.3.1 | MIT License | (c) 2017-2021 atomiks */
+/* For tippy.js v6.3.7 | MIT License | (c) 2017-2021 atomiks */
 
 .tippy-box[data-animation=scale][data-placement^=top] {
 	transform-origin: bottom;
@@ -13,6 +13,6 @@
 	transform-origin: left;
 }
 .tippy-box[data-animation=scale][data-state=hidden] {
-	transform: scale(.5);
+	transform: scale(0.5);
 	opacity: 0;
 }
