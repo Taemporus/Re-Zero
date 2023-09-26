@@ -27,29 +27,48 @@
 				visibility: hidden !important;
 			}
 		</style>
+		<script id="prefix_script">
+			window.storagePrefix = 'rezero';
+		</script>
 		<script id="script_loader">
 			!function(){"use strict";var n={"import":function(t,i,e,s,o,r){return new c(t,i,e,s,o,r).init()},run:function(t,i,e){return new s(t,i,e).init()},load:function(t,i,e,s){return new o(t,i,e,s).init()},entries:[],scripts:{},functions:[],resources:[]};function h(t,i){this.requires={},this.reqByStatus={},[c.LOADING,c.LOADED,c.FAILED].forEach(function(t){this.reqByStatus[t]={}},this),(t instanceof Array?t:t?[t]:[]).forEach(function(t){var i=n.scripts[(t="object"==typeof t&&null!==t?t:{id:t}).id],e={data:i,soft:"undefined"!=typeof t.soft&&Boolean(t.soft)};this.requires[t.id]=e;var s=i?i.status:c.LOADING;this.reqByStatus[s][t.id]=e,i&&i.requiredBy.push(this)},this),this.callback="function"==typeof i?i:function(){},this.isInitialized=!1,this.isReady=!1,this.isFinished=!1,this.isPaused=!1,this.isAborted=!1,this.success=void 0}function c(t,i,e,s,o,r){h.call(this,e,s),this.id=String(t),this.sources=i instanceof Array?i.slice():i?[i]:[],this.sourceIndex=0,this.status=c.LOADING,this.requiredBy=[],n.entries.forEach(function(t){t.requires.hasOwnProperty(this.id)&&(this.requiredBy.push(t),t.requires[this.id].data=this,t.updateDependency(this.id,this.status))},this),this["async"]=void 0===o||Boolean(o),this.defer=void 0!==r&&Boolean(r),this.preloader=void 0,this.scriptNode=void 0}function s(t,i,e){h.call(this,i,e),this.execute="function"==typeof t?t:function(){}}function o(t,i,e,s){h.call(this,e,s),this.type=String(t),this.sources=i instanceof Array?i.slice():i?[i]:[],this.sourceIndex=0,this.preloadNode=void 0}h.prototype.updateDependency=function(t,i){if(this.requires.hasOwnProperty(t)&&this.reqByStatus.hasOwnProperty(i)){for(var e in this.reqByStatus)this.reqByStatus.hasOwnProperty(e)&&delete this.reqByStatus[e][t];this.reqByStatus[i][t]=this.requires[t]}this.checkDependencies()},h.prototype.checkDependencies=function(){var t,i;for(t in i=this.reqByStatus[c.FAILED])if(i.hasOwnProperty(t)&&!i[t].soft)return void this.ready(i[t].data);for(t in i=this.reqByStatus[c.LOADING])if(i.hasOwnProperty(t))return;this.ready()},h.prototype.init=function(){if(!this.isInitialized&&!this.isAborted)return this.isInitialized=!0,"function"==typeof this._init&&this._init(),n.entries.push(this),this.checkDependencies(),this},h.prototype.ready=function(t){this.isReady||this.isAborted||(this.isReady=!0,"function"==typeof this._ready&&this._ready(t))},h.prototype.finish=function(t){if(!this.isFinished){this.isFinished=!0,this.success=!t,"function"==typeof this._finish&&this._finish(t);try{this.callback.call(this,{success:this.success,failData:this.success?void 0:t})}catch(i){try{window.console.error(i)}catch(e){}}}},h.prototype.pause=function(){this.isPaused=!0,"function"==typeof this._pause&&this._pause()},h.prototype.resume=function(){this.isPaused=!1,"function"==typeof this._resume&&this._resume()},h.prototype.abort=function(){this.isAborted=!0,this.finish(this)},((c.prototype=Object.create(h.prototype)).constructor=c).prototype._init=function(){this.preloader=new o("script",this.sources).init(),n.scripts[this.id]=this},c.prototype._ready=function(t){t?this.finish(t):(this.preloader&&(this.preloader.pause(),this.sourceIndex=this.preloader.sourceIndex),this.attachNode())},c.prototype.attachNode=function(){var i,t,e,s,o;this.isPaused?this._resume=this.attachNode:(i=this).sourceIndex<this.sources.length?(t=document.createElement("script"),(this.scriptNode=t).id=this.id,t["async"]=this["async"],t.defer=this.defer,t.addEventListener("load",function(t){i.finish()}),t.addEventListener("error",function(t){i.sourceIndex++,i.attachNode()}),t.src=String(this.sources[this.sourceIndex]),(e=document.getElementById(t.id))?(s=e.parentNode,o=e.nextSibling,e.parentNode.removeChild(e),s.insertBefore(t,o)):document.head.appendChild(t)):this.finish(this)},c.prototype._finish=function(t){this.preloader&&this.preloader.abort(),this.status=this.success?c.LOADED:c.FAILED,this.requiredBy.forEach(function(t){t.updateDependency(this.id,this.status)},this)},c.LOADING=0,c.LOADED=1,c.FAILED=-1,((s.prototype=Object.create(h.prototype)).constructor=s).prototype._init=function(){n.functions.push(this)},s.prototype._ready=function(t){this.finish(t)},s.prototype._finish=function(t){if(this.success)try{this.execute()}catch(i){try{window.console.error(i)}catch(e){}}},((o.prototype=Object.create(h.prototype)).constructor=o).prototype._init=function(){n.resources.push(this)},o.prototype._ready=function(t){t?this.finish(t):this.attachNode()},o.prototype.attachNode=function(){var i,t,e,s,o;this.isPaused?this._resume=this.attachNode:(i=this).sourceIndex<this.sources.length?((t=document.createElement("link")).rel="preload",t.as="script",t.href=String(this.sources[this.sourceIndex]),t.addEventListener("load",function(t){i.finish()}),t.addEventListener("error",function(t){i.sourceIndex++,i.attachNode()}),(e=this.preloadNode)&&(s=e.parentNode)?(o=e.nextSibling,e.parentNode.removeChild(e),s.insertBefore(t,o)):document.head.appendChild(t),this.preloadNode=t):this.finish(this)},o.prototype._finish=function(t){var i=this.preloadNode;i&&i.parentNode&&i.parentNode.removeChild(i)},window.Loader=n}();
 		</script>
 		<script id="load_script">
-			// Polyfills: Array:find, Element:classList, Element:dataset, Element:matches, IntersectionObserver, Map, MutationObserver, Object.assign, Promise, Set
-			Loader.import("polyfill_misc", ["https://polyfill.io/v3/polyfill.min.js?features=Array.prototype.find%2CElement.prototype.classList%2CElement.prototype.dataset%2CElement.prototype.matches%2CIntersectionObserver%2CMap%2CMutationObserver%2CObject.assign%2CPromise%2CSet", "js/polyfill-misc.min.js"], []);
+			// Polyfills
+			Loader.import(
+				'polyfill_misc',
+				['https://polyfill.io/v3/polyfill.min.js?features='
+					+ 'Array.prototype.find,Element.prototype.classList,Element.prototype.dataset,'
+					+ 'Element.prototype.matches,IntersectionObserver,Map,MutationObserver,'
+					+ 'Object.assign,Promise,Set',
+				'js/polyfill-misc.min.js'],
+				[]
+			);
 			// Tippy tooltip library
-			Loader.import("popper_script", ["https://unpkg.com/@popperjs/core@2.10.2/dist/umd/popper.min.js", "js/popper.min.js"], {id: "polyfill_misc", soft: true});
-			Loader.import("tippy_script", ["https://unpkg.com/tippy.js@6.3.7/dist/tippy-bundle.umd.min.js", "js/tippy.min.js"], [{id: "polyfill_misc", soft: true}, "popper_script"]);
+			Loader.import(
+				'popper_script',
+				['https://unpkg.com/@popperjs/core@2.10.2/dist/umd/popper.min.js', 'js/popper.min.js'],
+				{id: 'polyfill_misc', soft: true}
+			);
+			Loader.import(
+				'tippy_script',
+				['https://unpkg.com/tippy.js@6.3.7/dist/tippy-bundle.umd.min.js', 'js/tippy.min.js'],
+				[{id: 'polyfill_misc', soft: true}, 'popper_script']
+			);
 			// Compatibility fixes for Tippy on IE
 			Loader.run(function() {
 				'use strict';
-				var style = document.querySelectorAll("style[data-tippy-stylesheet]")[0];
+				var style = document.querySelectorAll('style[data-tippy-stylesheet]')[0];
 				if (style) {
 					// Value 'initial' not supported in IE
-					style.innerText = style.innerText.replace(/(border-([a-zA-Z]+-)?color\s*:\s*)initial(\s*[;}])/g, "$1currentColor$3");
+					style.innerText = style.innerText.replace(
+						/(border-([a-zA-Z]+-)?color\s*:\s*)initial(\s*[;}])/g,
+						'$1currentColor$3'
+					);
 				}
-			}, ["tippy_script"]);
+			}, ['tippy_script']);
 			// Locally hosted scripts
-			Loader.import("local_scripts", "js/merged.min.js", {id: "polyfill_misc", soft: true});
-		</script>
-		<script id="prefix_script">
-			window.storagePrefix = "rezero";
+			Loader.import('local_scripts', 'js/merged.min.js', {id: 'polyfill_misc', soft: true});
 		</script>
 	</head>
 	<body>
@@ -74,21 +93,21 @@
 							<div class="submenu-content collapse-content">
 								<div class="menu-item" id="menu_item_section">
 									Sections
-									<button class="menu-item-button" id="button_section_show">Expand</button>
-									<button class="menu-item-button" id="button_section_hide">Collapse</button>
+									<button class="menu-item-button" id="button_section_show" type="button">Expand</button>
+									<button class="menu-item-button" id="button_section_hide" type="button">Collapse</button>
 								</div>
 								<div class="submenu collapsible show" id="submenu_controls_spoiler">
 									<div class="menu-item collapse-toggle" id="menu_item_spoiler">
 										Spoilers
-										<button class="menu-item-button" id="button_spoiler_show">Show</button>
-										<button class="menu-item-button" id="button_spoiler_hide">Hide</button>
+										<button class="menu-item-button" id="button_spoiler_show" type="button">Show</button>
+										<button class="menu-item-button" id="button_spoiler_hide" type="button">Hide</button>
 									</div>
 									<div class="submenu-content collapse-content">
 										<div class="submenu collapsible show" id="submenu_controls_spoiler_anime">
 											<div class="menu-item collapse-toggle" id="menu_item_spoiler_anime">
 												Anime: Forward references
-												<button class="menu-item-button" id="button_spoiler_anime_show">Show</button>
-												<button class="menu-item-button" id="button_spoiler_anime_hide">Hide</button>
+												<button class="menu-item-button" id="button_spoiler_anime_show" type="button">Show</button>
+												<button class="menu-item-button" id="button_spoiler_anime_hide" type="button">Hide</button>
 											</div>
 											<div class="submenu-content collapse-content">
 												<div class="menu-item" id="menu_item_spoiler_anime_episode">
@@ -99,18 +118,18 @@
 										</div>
 										<div class="menu-item" id="menu_item_spoiler_arc4">
 											Novels: Arc 4
-											<button class="menu-item-button" id="button_spoiler_arc4_show">Show</button>
-											<button class="menu-item-button" id="button_spoiler_arc4_hide">Hide</button>
+											<button class="menu-item-button" id="button_spoiler_arc4_show" type="button">Show</button>
+											<button class="menu-item-button" id="button_spoiler_arc4_hide" type="button">Hide</button>
 										</div>
 										<div class="menu-item" id="menu_item_spoiler_sidestory">
 											Novels: Side stories
-											<button class="menu-item-button" id="button_spoiler_sidestory_show">Show</button>
-											<button class="menu-item-button" id="button_spoiler_sidestory_hide">Hide</button>
+											<button class="menu-item-button" id="button_spoiler_sidestory_show" type="button">Show</button>
+											<button class="menu-item-button" id="button_spoiler_sidestory_hide" type="button">Hide</button>
 										</div>
 										<div class="menu-item" id="menu_item_spoiler_other">
 											Other (ideas etc.)
-											<button class="menu-item-button" id="button_spoiler_other_show">Show</button>
-											<button class="menu-item-button" id="button_spoiler_other_hide">Hide</button>
+											<button class="menu-item-button" id="button_spoiler_other_show" type="button">Show</button>
+											<button class="menu-item-button" id="button_spoiler_other_hide" type="button">Hide</button>
 										</div>
 									</div>
 								</div>
@@ -2282,10 +2301,21 @@
 									</li>
 								</ul>
 								<p>
-									There is not enough evidence &mdash; in particular about things Pandora <em>can’t</em> do &mdash; to make any definitive conclusions; all we can say is that what there is fits the hypothesis, but it seems compelling nonetheless. Another option would be for her power to simply be about <em>reverting</em> things that have happened, but that in itself seems far too general to not be completely broken, and at least for controlling the Serpent, it does not quite fit; though that one could also conceivably be related to the making of illusions instead. It could of course also be that <em>both</em> apply together.
+									There is not enough evidence &mdash; in particular about things Pandora <em>can’t</em> do &mdash; to make any definitive conclusions; all we can say is that what there is fits the hypothesis, but it seems compelling nonetheless. However, even if we consider this a reasonable explanation when viewing her actions in isolation, one more question presents itself: what does any of this have to do with <em>vanity</em>? In general, the association between the Sins and the respective Authorities &mdash; for both the Witches and the Archbishops &mdash; can be quite non-obvious in some cases, and this would be worth a discussion on its own. It turns out, though, that it is not actually that much of a stretch here.
+								</p>
+								<ul>
+									<li>
+										Vanity, or rather <span class="term">vainglory</span> (see the <a data-goto="section_18_Pandora" data-tippy-content="Jump to Episode 18">explanation</a> before) used to have a <a href="https://en.wikipedia.org/wiki/Vainglory" target="_blank" rel="noopener" data-tippy-content="Go to Wikipedia entry">very specific meaning </a> back when it was considered a cardinal sin in early Christianity. It meant <em>considering one’s own capabilities to be such that God’s help was not needed</em>, i.e. <em>equating one’s self to God</em>.
+									</li>
+									<li>
+										Now what do gods do? Among other things, they receive prayers, and may choose to grant them &mdash; prayers, or in other words, wishes.
+									</li>
+								</ul>
+								<p>
+									Another option would be for Pandora’s power to simply be about <em>reverting</em> things that have happened, but that in itself seems far too general to not be completely broken, and at least for controlling the Serpent, it does not quite fit; though that one could also conceivably be related to the making of illusions instead. It could of course also be that <em>both</em> apply together in some fashion.
 								</p>
 								<p>
-									(One other piece of evidence would be relevant here from not <em>too</em> far ahead in the story, somewhat in favor of her authority being based on a person’s desires, but it nonetheless won’t be discussed here as it is a major spoiler.)
+									(One other piece of evidence would be relevant here from not <em>too</em> far ahead in the story, somewhat in favor of Pandora’s authority being based on a person’s desires, but it nonetheless won’t be discussed here as it is a major spoiler.)
 								</p>
 							</div>
 						</div>
@@ -3435,32 +3465,38 @@
 		<div id="tooltip_fixed_root" style="position: fixed; top: 0; right: 0; width: 100%; height: 0; overflow: visible; z-index: 9999;"></div>
 		<script id="collapse_classes_script">
 			Loader.run(function() {
-				Array.prototype.forEach.call(document.querySelectorAll(".collapsible > .panel-heading"), function(elt) {elt.classList.add("collapse-toggle");});
-				Array.prototype.forEach.call(document.querySelectorAll(".collapsible > .panel-body"), function(elt) {elt.classList.add("collapse-content");});
-			}, "local_scripts");
+				Array.prototype.forEach.call(
+					document.querySelectorAll('.collapsible > .panel-heading'),
+					function(elt) {elt.classList.add('collapse-toggle');}
+				);
+				Array.prototype.forEach.call(
+					document.querySelectorAll('.collapsible > .panel-body'),
+					function(elt) {elt.classList.add('collapse-content');}
+				);
+			}, 'local_scripts');
 		</script>
 		<script id="clearfocus_script">
 			Loader.run(function() {
 				'use strict';
-				window.addEventListener("keydown", function(evt) {
+				window.addEventListener('keydown', function(evt) {
 					// Clear focus on ESC
-					if ((evt.which || evt.keyCode) == 27) {
+					if ((evt.which || evt.keyCode) === 27) {
 						var activeElt = document.activeElement;
 						if (activeElt && activeElt !== document && activeElt.tagName !== 'HTML' && activeElt.tagName !== 'BODY') {
 							// If element had visible focus, no further listeners should be called
-							if (activeElt.classList.contains("focus-visible")) {
+							if (activeElt.classList.contains('focus-visible')) {
 								evt.stopImmediatePropagation();
 							}
 							activeElt.blur();
 						}
 					}
 				}, true);
-			}, {id: "polyfill_misc", soft: true});
+			}, {id: 'polyfill_misc', soft: true});
 		</script>
 		<script id="goto_collapse_patch">
 			Loader.run(function() {
 				'use strict';
-				GoTo.globalCallbacks["init"].push(function(link, target) {
+				GoTo.globalCallbacks['init'].push(function(link, target) {
 					var ancestors = [target];
 					var node = target;
 					// Expand collapsible ancestors
@@ -3471,30 +3507,34 @@
 					// Account for the presence of a fixed header overlay
 					var data;
 					for (var i = 1; i < ancestors.length; i++) {
-						if ((data = Collapsibles.data.get(ancestors[i])) && data.toggleOverlay && (data.content.indexOf(ancestors[i-1]) >= 0)) {
-							var hadMargin = target.hasAttribute("data-goto-margintop");
-							var oldMargin = target.getAttribute("data-goto-margintop");
-							target.setAttribute("data-goto-margintop", (oldMargin || 0) + (data.toggleOverlay.bounds.height || 0));
+						if (
+							(data = Collapsibles.data.get(ancestors[i]))
+							&& data.toggleOverlay
+							&& data.content.indexOf(ancestors[i-1]) >= 0
+						) {
+							var hadMargin = target.hasAttribute('data-goto-margintop');
+							var oldMargin = target.getAttribute('data-goto-margintop');
+							target.setAttribute('data-goto-margintop', (oldMargin || 0) + (data.toggleOverlay.bounds.height || 0));
 							return {
-								type: "afterScroll",
+								type: 'afterScroll',
 								action: function() {
 									if (hadMargin) {
-										target.setAttribute("data-goto-margintop", oldMargin);
+										target.setAttribute('data-goto-margintop', oldMargin);
 									} else {
-										target.removeAttribute("data-goto-margintop");
+										target.removeAttribute('data-goto-margintop');
 									}
 								}
 							};
 						}
 					}
 				});
-				GoTo.globalCallbacks["afterScroll"].push(function(link, target) {
+				GoTo.globalCallbacks['afterScroll'].push(function(link, target) {
 					var data, toggle;
 					if ((data = Collapsibles.data.get(target)) && (toggle = data.toggle[0])) {
 						toggle.focus();
 					}
 				});
-			}, ["local_scripts", {id: "polyfill_misc", soft: true}]);
+			}, ['local_scripts', {id: 'polyfill_misc', soft: true}]);
 		</script>
 		<script id="focus_collapse_patch">
 			Loader.run(function() {
@@ -3509,60 +3549,70 @@
 					// Account for the presence of a fixed header overlay
 					var data;
 					for (var i = 1; i < ancestors.length; i++) {
-						if ((data = Collapsibles.data.get(ancestors[i])) && data.toggleOverlay && (data.content.indexOf(ancestors[i-1]) >= 0)) {
-							GoTo.scrollTo(target, null, {target: "nearest", margin: {top: data.toggleOverlay.bounds.height || 0}, force: false, duration: 0});
+						if (
+							(data = Collapsibles.data.get(ancestors[i]))
+							&& data.toggleOverlay
+							&& data.content.indexOf(ancestors[i-1]) >= 0
+						) {
+							GoTo.scrollTo(target, null, {
+								target: 'nearest',
+								margin: {top: data.toggleOverlay.bounds.height || 0},
+								force: false,
+								duration: 0
+							});
 						}
 					}
 				});
-			}, ["local_scripts", {id: "polyfill_misc", soft: true}]);
+			}, ['local_scripts', {id: 'polyfill_misc', soft: true}]);
 		</script>
 		<script id="utils_script">
 			function unhide() {
-				var hide = document.getElementById("hide");
+				var hide = document.getElementById('hide');
 				hide.parentNode.removeChild(hide);
 			}
 			function initLinks() {
-				var main = document.getElementsByClassName("main")[0];
-				if (!main)
+				var main = document.getElementsByClassName('main')[0];
+				if (!main) {
 					return;
+				}
 				// Internal
-				Array.prototype.forEach.call(main.querySelectorAll("[data-goto]"), function(link) {
-					if (link.hasAttribute("data-tippy-content")) {
-						if (!link.hasAttribute("data-tooltip-touch")) {
-							link.setAttribute("data-tooltip-touch", "");
+				Array.prototype.forEach.call(main.querySelectorAll('[data-goto]'), function(link) {
+					if (link.hasAttribute('data-tippy-content')) {
+						if (!link.hasAttribute('data-tooltip-touch')) {
+							link.setAttribute('data-tooltip-touch', '');
 						}
 					} else {
-						link.setAttribute("data-tippy-content", "Jump to section");
+						link.setAttribute('data-tippy-content', 'Jump to section');
 					}
 				});
 				// External
-				PseudoButtons.create("a[href]", function(evt) {
+				PseudoButtons.create('a[href]', function(evt) {
 					if (evt.type !== 'click') {
 						this.click();
 					}
 				}).forEach(function(link) {
-					if (link.hasAttribute("data-tippy-content")) {
-						if (!link.hasAttribute("data-tooltip-touch")) {
-							link.setAttribute("data-tooltip-touch", "");
+					if (link.hasAttribute('data-tippy-content')) {
+						if (!link.hasAttribute('data-tooltip-touch')) {
+							link.setAttribute('data-tooltip-touch', '');
 						}
-						if (!link.hasAttribute("data-tippy-animation")) {
-							link.setAttribute("data-tippy-animation", 'shift-toward');
+						if (!link.hasAttribute('data-tippy-animation')) {
+							link.setAttribute('data-tippy-animation', 'shift-toward');
 						}
 					}
 				});
 			}
 			function initSpoilerTooltips() {
 				Spoilers.data.forEach(function(spoiler, elt) {
-					elt.setAttribute("data-tooltip-touch", "");
-					elt.setAttribute("data-tippy-hideonclick", false);
-					elt.setAttribute("data-tippy-animation", 'shift-toward');
+					elt.setAttribute('data-tooltip-touch', '');
+					elt.setAttribute('data-tippy-hideonclick', false);
+					elt.setAttribute('data-tippy-animation', 'shift-toward');
 				});
 				Spoilers.addChangeListener(void 0, function(show) {
 					var elt = this.element;
 					var content =
-						(elt.classList.contains("noprefix") ? "" : (show ? "Hide " : "Show ")) +
+						(elt.classList.contains('noprefix') ? '' : (show ? 'Hide ' : 'Show ')) +
 						this.description;
-					elt.setAttribute("data-tippy-content", content);
+					elt.setAttribute('data-tippy-content', content);
 					if (elt._tippy) {
 						elt._tippy.setContent(content);
 					}
@@ -3570,8 +3620,9 @@
 			}
 			function initHiddenControls(container, controls, delays) {
 				container = (container instanceof Element) ? container : document.getElementById(container);
-				if (!container)
+				if (!container) {
 					return;
+				}
 				function getValue(obj) {
 					for (var i = 1; i < arguments.length; i++) {
 						if (typeof obj === 'object' && obj !== null) {
@@ -3581,24 +3632,23 @@
 						}
 					}
 					return (typeof obj === 'function') ? (function() {
-							try {
-								return Math.max(parseInt(obj(), 10) || 0, 0);
-							} catch (err) {
-								return 0;
-							}
-						}) :
-						Math.max(parseInt(obj, 10) || 0, 0);
+						try {
+							return Math.max(parseInt(obj(), 10) || 0, 0);
+						} catch (err) {
+							return 0;
+						}
+					}) : Math.max(parseInt(obj, 10) || 0, 0);
 				}
 				delays = {
 					enter: {
-						touch: getValue(delays, "enter", "touch"),
-						mouse: getValue(delays, "enter", "mouse"),
-						focus: getValue(delays, "enter", "focus")
+						touch: getValue(delays, 'enter', 'touch'),
+						mouse: getValue(delays, 'enter', 'mouse'),
+						focus: getValue(delays, 'enter', 'focus')
 					},
 					leave: {
-						touch: getValue(delays, "leave", "touch"),
-						mouse: getValue(delays, "leave", "mouse"),
-						focus: getValue(delays, "leave", "focus")
+						touch: getValue(delays, 'leave', 'touch'),
+						mouse: getValue(delays, 'leave', 'mouse'),
+						focus: getValue(delays, 'leave', 'focus')
 					}
 				};
 				var timers = {
@@ -3609,9 +3659,9 @@
 				var focus = false;
 				function update() {
 					if (hover || focus) {
-						container.classList.contains("show") || container.classList.add("show");
+						container.classList.contains('show') || container.classList.add   ('show');
 					} else {
-						!container.classList.contains("show") || container.classList.remove("show");
+						container.classList.contains('show') && container.classList.remove('show');
 					}
 				}
 				container.addEventListener('mouseenter', function() {
@@ -3681,48 +3731,49 @@
 			Loader.run(function() {
 				Navigation.init(
 					{
-						outer: document.getElementById("navbar"),
-						inner: document.getElementById("navbar_contents")
+						outer: document.getElementById('navbar'),
+						inner: document.getElementById('navbar_contents')
 					},
-					document.querySelectorAll(".panel-major"),
+					document.querySelectorAll('.panel-major'),
 					{
 						text: function(section) {
-							var heading = section.getElementsByClassName("panel-heading")[0];
-							return heading ? heading.textContent.trim() : "";
+							var heading = section.getElementsByClassName('panel-heading')[0];
+							return heading ? heading.textContent.trim() : '';
 						},
-						placement: "right",
+						placement: 'right',
 						sticky: true,
-						animation: "scale",
-						parent: "tooltip_fixed_root"
+						animation: 'scale',
+						parent: 'tooltip_fixed_root'
 					}
 				);
 				initHiddenControls(Navigation.navBar, Navigation.navItems, {
 					enter: {mouse: 50, touch: 300},
 					leave: {mouse: 500}
 				});
-			}, "local_scripts");
+			}, 'local_scripts');
 		</script>
 		<script id="menu_script">
 			Loader.run(function() {
 				'use strict';
-				window.Menu = {
+				var Menu = {
 					element: void 0,
 					button: void 0,
 					isShown: void 0,
 					setShown: function(show) {
-						if (!Menu.element)
+						if (!Menu.element) {
 							return;
-						show = (typeof show === 'undefined') ? Menu.element.classList.contains("show") : Boolean(show);
+						}
+						show = (typeof show === 'undefined') ? Menu.element.classList.contains('show') : Boolean(show);
 						if (Menu.isShown === show) {
 							return false;
 						} else {
 							if (show) {
 								Menu.isShown = true;
-								Menu.element && Menu.element.classList.add("show");
+								Menu.element && Menu.element.classList.add('show');
 								Menu.button && Menu.button.focus();
 							} else {
 								Menu.isShown = false;
-								Menu.element && Menu.element.classList.remove("show");
+								Menu.element && Menu.element.classList.remove('show');
 							}
 							return true;
 						}
@@ -3731,11 +3782,11 @@
 						Menu.setShown(!Menu.isShown);
 					},
 					setSectionState: function(show) {
-						Collapsibles.set(".panel-major", show);
+						Collapsibles.set('.panel-major', show);
 					},
 					setSpoilerState: function(show, type) {
-						var typeFilter = type ? ("[data-spoiler-type='" + type + "']") : "";
-						Collapsibles.set(".panel-minor" + typeFilter, show);
+						var typeFilter = type ? ('[data-spoiler-type="' + type + '"]') : '';
+						Collapsibles.set('.panel-minor' + typeFilter, show);
 						Spoilers.set(typeFilter, show);
 					},
 					resetAll: function() {
@@ -3763,8 +3814,8 @@
 				
 				// Basic elements
 				Menu.element = document.getElementById('menu_container');
-				Menu.button = Menu.initButton("menu_button", function(evt) {Menu.toggleShown();});
-				initHiddenControls("menu_button_wrapper", Menu.button, {
+				Menu.button = Menu.initButton('menu_button', function(evt) {Menu.toggleShown();});
+				initHiddenControls('menu_button_wrapper', Menu.button, {
 					enter: {
 						mouse: function() {return Menu.isShown ? 0 : 50;},
 						touch: function() {return Menu.isShown ? 0 : 300;}
@@ -3775,50 +3826,57 @@
 				});
 				Menu.setShown();
 				// Additional activators
-				PseudoButtons.create(document.querySelectorAll("[data-menulink]"), function(evt) {Menu.setShown(true);}, {role: 'button'}).forEach(function(button) {
-					button.setAttribute("data-tippy-content", "Show menu");
-					button.setAttribute("data-tippy-animation", 'shift-toward');
+				PseudoButtons.create(
+					document.querySelectorAll('[data-menulink]'),
+					function(evt) {Menu.setShown(true);},
+					{role: 'button'}
+				).forEach(function(button) {
+					button.setAttribute('data-tippy-content', 'Show menu');
+					button.setAttribute('data-tippy-animation', 'shift-toward');
 				});
 				// Menu items
-				Menu.initButton("button_section_show", function(evt) {Menu.setSectionState(true);});
-				Menu.initButton("button_section_hide", function(evt) {Menu.setSectionState(false);});
-				Menu.initButton("button_spoiler_show", function(evt) {Menu.setSpoilerState(true);});
-				Menu.initButton("button_spoiler_hide", function(evt) {Menu.setSpoilerState(false);});
-				Menu.initButton("button_spoiler_anime_show", function(evt) {Menu.setSpoilerState(true, "anime");});
-				Menu.initButton("button_spoiler_anime_hide", function(evt) {Menu.setSpoilerState(false, "anime");});
-				Menu.initNumberField("spoiler_episode_limit", "int", function(value) {
+				Menu.initButton('button_section_show',       function(evt) {Menu.setSectionState(true );});
+				Menu.initButton('button_section_hide',       function(evt) {Menu.setSectionState(false);});
+				Menu.initButton('button_spoiler_show',       function(evt) {Menu.setSpoilerState(true );});
+				Menu.initButton('button_spoiler_hide',       function(evt) {Menu.setSpoilerState(false);});
+				Menu.initButton('button_spoiler_anime_show', function(evt) {Menu.setSpoilerState(true , 'anime');});
+				Menu.initButton('button_spoiler_anime_hide', function(evt) {Menu.setSpoilerState(false, 'anime');});
+				Menu.initNumberField('spoiler_episode_limit', 'int', function(value) {
 					Menu.setSpoilerState(function(spoiler) {
-						return parseInt(spoiler.element.getAttribute("data-spoiler-episode")) <= value;
-					}, "anime");
+						return parseInt(spoiler.element.getAttribute('data-spoiler-episode'), 10) <= value;
+					}, 'anime');
 				});
-				Menu.initButton("button_spoiler_arc4_show", function(evt) {Menu.setSpoilerState(true, "arc4");});
-				Menu.initButton("button_spoiler_arc4_hide", function(evt) {Menu.setSpoilerState(false, "arc4");});
-				Menu.initButton("button_spoiler_sidestory_show", function(evt) {Menu.setSpoilerState(true, "sideStory");});
-				Menu.initButton("button_spoiler_sidestory_hide", function(evt) {Menu.setSpoilerState(false, "sideStory");});
-				Menu.initButton("button_spoiler_other_show", function(evt) {Menu.setSpoilerState(true, "other");});
-				Menu.initButton("button_spoiler_other_hide", function(evt) {Menu.setSpoilerState(false, "other");});
-				Menu.initButton("menu_item_reset", function(evt) {Menu.resetAll();});
+				Menu.initButton('button_spoiler_arc4_show',      function(evt) {Menu.setSpoilerState(true , 'arc4'     );});
+				Menu.initButton('button_spoiler_arc4_hide',      function(evt) {Menu.setSpoilerState(false, 'arc4'     );});
+				Menu.initButton('button_spoiler_sidestory_show', function(evt) {Menu.setSpoilerState(true , 'sideStory');});
+				Menu.initButton('button_spoiler_sidestory_hide', function(evt) {Menu.setSpoilerState(false, 'sideStory');});
+				Menu.initButton('button_spoiler_other_show',     function(evt) {Menu.setSpoilerState(true , 'other'    );});
+				Menu.initButton('button_spoiler_other_hide',     function(evt) {Menu.setSpoilerState(false, 'other'    );});
+				Menu.initButton('menu_item_reset', function(evt) {Menu.resetAll();});
 				
-				var menuItems = document.getElementById("menu").querySelectorAll(".menu-item");
+				var menuItems = document.getElementById('menu').querySelectorAll('.menu-item');
 				Array.prototype.forEach.call(menuItems, function(menuItem) {
 					initHiddenControls(menuItem);
 				});
 				
 				// Close menu on ESC
 				window.addEventListener('keydown', function(evt) {
-					if ((evt.which || evt.keyCode) == 27) {
+					if ((evt.which || evt.keyCode) === 27) {
 						if (Menu.setShown(false)) {
 							evt.stopImmediatePropagation();
 						}
 					}
 				}, true);
-			}, ["local_scripts", {id: "polyfill_misc", soft: true}]);
+				
+				// Export Menu object to global scope
+				window.Menu = Menu;
+			}, ['local_scripts', {id: 'polyfill_misc', soft: true}]);
 		</script>
 		<script id="init_script">
 			// Essential functionality
 			Loader.run(function() {
-				Collapsibles.init(".collapsible");
-				Spoilers.init(".inline-spoiler");
+				Collapsibles.init('.collapsible');
+				Spoilers.init('.inline-spoiler');
 				initSpoilerTooltips();
 				initLinks();
 				GoTo.init();
@@ -3827,8 +3885,8 @@
 				// Non-essential functionality
 				Loader.run(function() {
 					Tooltips.init();
-				}, ["local_scripts", "tippy_script"]);
-			}, "local_scripts");
+				}, ['local_scripts', 'tippy_script']);
+			}, 'local_scripts');
 		</script>
 	</body>
 </html>
