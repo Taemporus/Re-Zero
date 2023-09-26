@@ -12,19 +12,19 @@ const uglify = require('gulp-uglify');
 
 const paths = {
 	css: {
-		srcdir: "./css/src/",
+		srcdir: "./src/css/",
 		src: [
 			["merged.min.css", [
 				"normalize.css",
 				"style.scss",
-				"tippy/animations/scale.css",
-				"tippy/animations/shift-toward.css"
+				"tippy/scale.css",
+				"tippy/shift-toward.css"
 			]]
 		],
-		dest: "./css/"
+		dest: "./docs/css/"
 	},
 	js: {
-		srcdir: "./js/src/",
+		srcdir: "./src/js/",
 		src: [
 			["merged.min.js", [
 				"scrollingElement.js",
@@ -45,7 +45,7 @@ const paths = {
 				"loader.js"
 			]]
 		],
-		dest: "./js/"
+		dest: "./docs/js/"
 	}
 }
 
@@ -63,7 +63,7 @@ function _css(fromPaths, toPath) {
 		.pipe(rename(toPath))
 		.pipe(sourcemaps.write(".", {
 			destPath: ".",
-			includeContent: false,
+			includeContent: true,
 			sourceRoot: "src"
 		}))
 		.pipe(gulp.dest(paths.css.dest));
@@ -86,7 +86,7 @@ function _js(fromPaths, toPath) {
 		.pipe(rename(toPath))
 		.pipe(sourcemaps.write(".", {
 			destPath: ".",
-			includeContent: false,
+			includeContent: true,
 			sourceRoot: "src"
 		}))
 		.pipe(gulp.dest(paths.js.dest));

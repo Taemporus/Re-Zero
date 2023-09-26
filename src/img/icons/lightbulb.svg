@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<svg version="1.1" viewBox="0 0 600 2100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<defs>
+		<path id="ray"
+			d="m 0,-194 c 9,0 16,-7 16,-16 v -74 c 0,-9 -7,-16 -16,-16 -9,0 -16,7 -16,16 v 74 c 0,9 7,16 16,16 z"/>
+		<g id="icon" fill="inherit">
+			<path d="m 0,-155 c -86,0 -155,69 -155,155 0,43 18,82 48,112 20,20 32,47 32,76 v 18 c 0,29 19,48 48,48 h 54 c 29,0 48,-19 48,-48 v -18 c 0,-29 12,-56 32,-76 30,-30 48,-69 48,-112 0,-86 -69,-155 -155,-155 Z m 0,41 c 63,0 114,51 114,114 0,32 -12,59 -35,82 -28,28 -45,67 -45,106 v 18 c 0,4 -3,7 -7,7 h -54 c -4,0 -7,-3 -7,-7 v -18 c 0,-39 -17,-78 -45,-106 -23,-23 -35,-50 -35,-82 0,-63 51,-114 114,-114 z"/>
+			<use href="#ray" xlink:href="#ray" transform="translate(0,5) rotate(-135)"/>
+			<use href="#ray" xlink:href="#ray" transform="rotate(-90)"/>
+			<use href="#ray" xlink:href="#ray" transform="rotate(-45)"/>
+			<use href="#ray" xlink:href="#ray"/>
+			<use href="#ray" xlink:href="#ray" transform="rotate(45)"/>
+			<use href="#ray" xlink:href="#ray" transform="rotate(90)"/>
+			<use href="#ray" xlink:href="#ray" transform="translate(0,5) rotate(135)"/>
+			<path d="m 64,291 c 0,12 -8,20 -20,20 h -88 c -12,0 -20,-8 -20,-20 0,-12 8,-20 20,-20 h 88 c 12,0 20,8 20,20 z"/>
+			<path d="m 64,348 c 0,-12 -8,-20 -20,-20 h -88 c -12,0 -20,8 -20,20 0,12 8,20 20,20 0,18 14,32 32,32 h 24 c 18,0 32,-14 32,-32 12,0 20,-8 20,-20 z"/>
+		</g>
+	</defs>
+	<use href="#icon" xlink:href="#icon" fill="#FF8080" transform="translate(300,300)"/>
+	<use href="#icon" xlink:href="#icon" fill="#FFFFFF" transform="translate(300,1700)"/>
+</svg>
