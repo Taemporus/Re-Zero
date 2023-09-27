@@ -1,6 +1,8 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
+
+/* global GoTo, HeaderOverlays, PseudoButtons */
 (function() {
 	'use strict';
 	function Collapsible(container) {
@@ -12,9 +14,9 @@
 		Array.prototype.forEach.call(this.container.children, function(child) {
 			if (['script', 'style'].indexOf(child.tagName.toLowerCase()) >= 0) {
 				return;
-			} else if (child.classList.contains("collapse-toggle")) {
+			} else if (child.classList.contains('collapse-toggle')) {
 				this.toggle.push(child);
-			} else if (child.classList.contains("collapse-content")) {
+			} else if (child.classList.contains('collapse-content')) {
 				this.content.push(child);
 			} else {
 				neither.push(child);
@@ -28,12 +30,12 @@
 		}
 		// Add classes
 		this.toggle.forEach(function(toggle) {
-			if (!toggle.classList.contains("collapse-toggle"))
-				toggle.classList.addClass("collapse-toggle");
+			toggle.classList.contains('collapse-toggle') ||
+				toggle.classList.addClass('collapse-toggle');
 		});
 		this.content.forEach(function(content) {
-			if (!content.classList.contains("collapse-content"))
-				content.classList.addClass("collapse-content");
+			content.classList.contains('collapse-content') ||
+				content.classList.addClass('collapse-content');
 		});
 		// Make toggle(s) focusable
 		this.toggle.forEach(function(toggle) {
@@ -41,14 +43,18 @@
 		});
 		// Create header overlay for *first* toggle when the container has '[data-retain-head]'
 		this.toggleOverlay = void 0;
-		if (HeaderOverlays && this.container.hasAttribute("data-retain-head") && this.container.getAttribute("data-retain-head").toLowerCase() !== "false" && this.toggle.length) {
+		if (
+			typeof HeaderOverlays === 'object' &&
+			this.container.hasAttribute('data-retain-head') &&
+			this.container.getAttribute('data-retain-head').toLowerCase() !== 'false' &&
+			this.toggle.length
+		) {
 			var toggle = this.toggle[0];
 			this.toggleOverlay = HeaderOverlays.create(toggle.parentNode, toggle, function(container, tuple) {
 				tuple.main.parentNode.insertBefore(tuple.bottom, tuple.main.nextSibling);
 				tuple.main.parentNode.insertBefore(tuple.fixed, tuple.bottom);
 			}, (function() {
-				if (!this.shown)
-					return false;
+				return this.shown ? void 0 : false;
 			}).bind(this), true)[0];
 		}
 		// Default state
@@ -60,7 +66,7 @@
 	Collapsible.prototype.set = function(show, save) {
 		var elt = this.container;
 		// If state is unspecified, use the element's classes to determine it
-		show = (typeof show === 'undefined') ? elt.classList.contains("show") : Boolean(show);
+		show = (typeof show === 'undefined') ? elt.classList.contains('show') : Boolean(show);
 		// Save state by default
 		save = (typeof save === 'undefined') ? true : Boolean(save);
 		// Set new value and save it if requested
@@ -75,9 +81,9 @@
 		});
 		// Update classes
 		if (show) {
-			elt.classList.add("show");
+			elt.classList.add('show');
 		} else {
-			elt.classList.remove("show");
+			elt.classList.remove('show');
 		}
 		// Execute state change handlers
 		this._changeHandlers && this._changeHandlers.forEach(function(entry) {
@@ -90,25 +96,25 @@
 		return this.set(!this.shown, save);
 	};
 	Collapsible.prototype.load = function() {
-		var key = this._storageKey("show");
+		var key = this._storageKey('show');
 		var show = key && localStorage.getItem(key);
-		return show ? this.set(show === "true", false) : void 0;
+		return show ? this.set(show === 'true', false) : void 0;
 	};
 	Collapsible.prototype.save = function() {
-		var key = this._storageKey("show");
+		var key = this._storageKey('show');
 		return key ? (localStorage.setItem(key, this.shown), this.shown) : void 0;
 	};
 	Collapsible.prototype.unsave = function() {
-		var key = this._storageKey("show");
+		var key = this._storageKey('show');
 		return key ? (localStorage.removeItem(key), this.shown) : void 0;
 	};
 	Collapsible.prototype._storageKey = function(property) {
-		return this.container.id ? ((window.storagePrefix || "") + "/" + property + "/" + this.container.id) : void 0;
+		return this.container.id ? ((window.storagePrefix || '') + '/' + property + '/' + this.container.id) : void 0;
 	};
 	Collapsible.prototype.addChangeListener = function(action, opts) {
 		typeof opts === 'object' || (opts = {});
 		var entry = {action: action};
-		entry.maxCount = parseInt(opts.maxCount);
+		entry.maxCount = parseInt(opts.maxCount, 10);
 		entry.maxCount < 0 && (entry.maxCount = NaN);
 		entry.count = 0;
 		if (entry.maxCount !== 0) {
@@ -139,7 +145,7 @@
 	function forSelected(selector, fn) {
 		// Process selector argument
 		if (!selector) {
-			selector = "";
+			selector = '';
 		} else if (selector instanceof Element || selector instanceof Collapsible) {
 			selector = [selector];
 		}
@@ -153,7 +159,7 @@
 		if (typeof selector === 'string') {
 			// If selector is a string, match Collapsible entries against it
 			Collapsibles.data.forEach(function(collapsible, elt) {
-				if (selector === "" || elt.matches(selector)) {
+				if (selector === '' || elt.matches(selector)) {
 					result.set(collapsible, fn.apply(collapsible, args.map(argProc, collapsible)));
 				}
 			});
@@ -184,12 +190,14 @@
 			}
 			// Event handling
 			var doToggle = function() {
-				var scrollData = GoTo.scrollTo(this, null, {target: "nearest", force: false, duration: 0});
+				var scrollData = GoTo.scrollTo(this, null, {target: 'nearest', force: false, duration: 0});
 				Collapsibles.toggle(this.parentNode);
 				scrollData.container.scrollTop = scrollData.scroll;
 				this.focus();
 			};
-			var createPseudoButtons = PseudoButtons && typeof PseudoButtons.create === 'function';
+			var createPseudoButtons =
+				(typeof PseudoButtons        === 'object'  ) &&
+				(typeof PseudoButtons.create === 'function');
 			// Process list of elements
 			var collapsibles = [];
 			Array.prototype.forEach.call(elts, function(elt) {
@@ -215,7 +223,7 @@
 				}
 			});
 			// Initialize overlay for all headers where applicable
-			if (HeaderOverlays) {
+			if (typeof HeaderOverlays === 'object') {
 				var overlays = [];
 				collapsibles.forEach(function(collapsible) {
 					var overlay = collapsible.toggleOverlay;
@@ -230,10 +238,12 @@
 			return collapsibles;
 		},
 		set: function(selector, show, save) {
-			return forSelected(selector, Collapsible.prototype.set, {value: show, evalFunc: true}, {value: save, evalFunc: true});
+			return forSelected(selector, Collapsible.prototype.set,
+				{value: show, evalFunc: true}, {value: save, evalFunc: true});
 		},
 		toggle: function(selector, save) {
-			return forSelected(selector, Collapsible.prototype.toggle, {value: save, evalFunc: true});
+			return forSelected(selector, Collapsible.prototype.toggle,
+				{value: save, evalFunc: true});
 		},
 		load: function(selector) {
 			return forSelected(selector, Collapsible.prototype.load);
@@ -245,10 +255,12 @@
 			return forSelected(selector, Collapsible.prototype.unsave);
 		},
 		addChangeListener: function(selector, action, opts) {
-			return forSelected(selector, Collapsible.prototype.addChangeListener, {value: action}, {value: opts, evalFunc: true});
+			return forSelected(selector, Collapsible.prototype.addChangeListener,
+				{value: action}, {value: opts, evalFunc: true});
 		},
 		removeChangeListener: function(selector, entry) {
-			return forSelected(selector, Collapsible.prototype.removeChangeListener, {value: entry, evalFunc: true});
+			return forSelected(selector, Collapsible.prototype.removeChangeListener,
+				{value: entry, evalFunc: true});
 		},
 		data: new Map()
 	};

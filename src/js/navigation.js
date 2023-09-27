@@ -1,12 +1,15 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
+
+/* eslint-disable no-cond-assign */
+/* global GoTo */
 (function() {
 	'use strict';
 	function NavigationData(link, target, index) {
 		this.link = (link instanceof Element) ? link : void 0;
 		this.target = (target instanceof Element) ? target : void 0;
-		this.index = parseInt(index);
+		this.index = parseInt(index, 10);
 		this.relPos = void 0;
 		this.rect = void 0;
 	}
@@ -49,28 +52,32 @@
 				var navItem = document.createElement('a');
 				var navData = new NavigationData(navItem, section, i);
 				var content;
-				if (content = section.getAttribute("data-navtext")) {
-					content = "<div class=\"navtext\">" + content + "</div>";
-				} else if (content = section.getAttribute("data-navicon")) {
-					content = "<div id=\"" + content + "\" class=\"navicon\"></div>";
+				if (content = section.getAttribute('data-navtext')) {
+					content = '<div class="navtext">' + content + '</div>';
+				} else if (content = section.getAttribute('data-navicon')) {
+					content = '<div id="' + content + '" class="navicon"></div>';
 				} else {
-					content = "?";
+					content = '?';
 				}
-				var tooltipText = (typeof tooltips.text === 'function') ? tooltips.text(section, navItem) : (tooltips.text || "");
-				
-				navItem.classList.add("navitem");
-				navItem.style.cssText = "-ms-grid-row: " + (i + 1);
-				navItem.setAttribute("data-goto", section.id);
-				navItem.setAttribute('aria-label', tooltipText);
-				navItem.setAttribute("data-tippy-content", tooltipText);
-				navItem.setAttribute("data-tippy-placement", (typeof tooltips.placement === 'function') ? tooltips.placement(section, navItem) : (tooltips.placement || ""));
-				navItem.setAttribute("data-tippy-sticky", (typeof tooltips.sticky === 'function') ? tooltips.sticky(section, navItem) : (tooltips.sticky || ""));
-				navItem.setAttribute("data-tippy-animation", (typeof tooltips.animation === 'function') ? tooltips.animation(section, navItem) : (tooltips.animation || ""));
-				navItem.setAttribute("data-tooltip-touch", "");
-				navItem.setAttribute("data-tooltip-parent", (typeof tooltips.parent === 'function') ? tooltips.parent(section, navItem) : (tooltips.parent || ""));
-				
 				navItem.innerHTML = content;
-				
+				navItem.classList.add('navitem');
+				navItem.style.cssText = '-ms-grid-row: ' + (i + 1);
+
+				function getTooltipOption(key) {
+					return (typeof tooltips[key] === 'function')
+						? tooltips[key](section, navItem)
+						: (tooltips[key] || '');
+				}
+				var tooltipText = getTooltipOption('text');
+				navItem.setAttribute('data-goto',            section.id);
+				navItem.setAttribute('aria-label',           tooltipText);
+				navItem.setAttribute('data-tippy-content',   tooltipText);
+				navItem.setAttribute('data-tippy-placement', getTooltipOption('placement'));
+				navItem.setAttribute('data-tippy-sticky',    getTooltipOption('sticky'));
+				navItem.setAttribute('data-tippy-animation', getTooltipOption('animation'));
+				navItem.setAttribute('data-tooltip-touch',   '');
+				navItem.setAttribute('data-tooltip-parent',  getTooltipOption('parent'));
+
 				Navigation.navItems.push(navItem);
 				Navigation.data.set(section, navData);
 			});
@@ -91,18 +98,18 @@
 						}
 					});
 					Navigation._updateCurrent();
-				}, {rootMargin: "-1px", threshold: 0});
+				}, {rootMargin: '-1px', threshold: 0});
 				Navigation.data.forEach(function(navData, section) {
 					observer.observe(section);
 				});
 			}
 			// Lock automatic scrolling of navigation menu while scrolling after being clicked
-			if (GoTo) {
-				GoTo.globalCallbacks["beforeScroll"].push(function(link, target) {
+			if (typeof GoTo === 'object') {
+				GoTo.globalCallbacks['beforeScroll'].push(function(link, target) {
 					if (Navigation.navItems.indexOf(link) >= 0) {
 						Navigation.autoScrollLock++;
 						return {
-							type: "afterScroll",
+							type: 'afterScroll',
 							action: function() {Navigation.autoScrollLock--;}
 						};
 					}
@@ -120,7 +127,7 @@
 		 */
 		_updateCurrent: function() {
 			var closest = {};
-			Navigation.data.forEach(function(navData, section) {
+			Navigation.data.forEach(function(navData) {
 				var relPos = navData.relPos;
 				var found = closest[relPos];
 				if (relPos < 0) {
@@ -137,13 +144,17 @@
 			if (newCurrent !== Navigation.current) {
 				// Scroll navigation menu if necessary so the current item is visible
 				if (!Navigation.autoScrollLock && typeof GoTo !== 'undefined') {
-					GoTo.scrollTo(newCurrent.link, Navigation.navParent, {target: "farthest", force: false, duration: 0});
+					GoTo.scrollTo(
+						newCurrent.link,
+						Navigation.navParent,
+						{target: 'farthest', force: false, duration: 0}
+					);
 				}
 				// Update classes
 				if (Navigation.current) {
-					Navigation.current.link.classList.remove("current");
+					Navigation.current.link.classList.remove('current');
 				}
-				newCurrent.link.classList.add("current");
+				newCurrent.link.classList.add('current');
 				Navigation.current = newCurrent;
 			}
 		},

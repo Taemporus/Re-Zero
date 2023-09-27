@@ -1,11 +1,13 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
+
+/* global PseudoButtons */
 (function() {
 	'use strict';
 	function Spoiler(element, description) {
 		this.element = (element instanceof Element) ? element : void 0;
-		this.description = description ? String(description) : (this.element.getAttribute("data-spoiler") || "spoiler");
+		this.description = description ? String(description) : (this.element.getAttribute('data-spoiler') || 'spoiler');
 		// Default state
 		this.shown = void 0;
 		this.load() || this.set();
@@ -15,7 +17,7 @@
 	Spoiler.prototype.set = function(show, save) {
 		var elt = this.element;
 		// If state is unspecified, use the element's classes to determine it
-		show = (typeof show === 'undefined') ? elt.classList.contains("show") : Boolean(show);
+		show = (typeof show === 'undefined') ? elt.classList.contains('show') : Boolean(show);
 		// Save state by default
 		save = (typeof save === 'undefined') ? true : Boolean(save);
 		// Set new value and save it if requested
@@ -26,20 +28,20 @@
 		// Hide content and disable descendant elements when not shown
 		if (!show) {
 			elt.style.background = 'currentColor';
-			elt.querySelectorAll('*').forEach(function(desc) {
+			Array.prototype.forEach.call(elt.querySelectorAll('*'), function(desc) {
 				desc.style.visibility = 'hidden';
 			});
 		} else {
 			elt.style.background = '';
-			elt.querySelectorAll('*').forEach(function(desc) {
+			Array.prototype.forEach.call(elt.querySelectorAll('*'), function(desc) {
 				desc.style.visibility = '';
 			});
 		}
 		// Update classes
 		if (show) {
-			elt.classList.add("show");
+			elt.classList.add('show');
 		} else {
-			elt.classList.remove("show");
+			elt.classList.remove('show');
 		}
 		// Execute state change handlers
 		this._changeHandlers && this._changeHandlers.forEach(function(entry) {
@@ -52,25 +54,25 @@
 		return this.set(!this.shown, save);
 	};
 	Spoiler.prototype.load = function() {
-		var key = this._storageKey("show");
+		var key = this._storageKey('show');
 		var show = key && localStorage.getItem(key);
-		return show ? this.set(show === "true", false) : void 0;
+		return show ? this.set(show === 'true', false) : void 0;
 	};
 	Spoiler.prototype.save = function() {
-		var key = this._storageKey("show");
+		var key = this._storageKey('show');
 		return key ? (localStorage.setItem(key, this.shown), this.shown) : void 0;
 	};
 	Spoiler.prototype.unsave = function() {
-		var key = this._storageKey("show");
+		var key = this._storageKey('show');
 		return key ? (localStorage.removeItem(key), this.shown) : void 0;
 	};
 	Spoiler.prototype._storageKey = function(property) {
-		return this.element.id ? ((window.storagePrefix || "") + "/" + property + "/" + this.element.id) : void 0;
+		return this.element.id ? ((window.storagePrefix || '') + '/' + property + '/' + this.element.id) : void 0;
 	};
 	Spoiler.prototype.addChangeListener = function(action, opts) {
 		typeof opts === 'object' || (opts = {});
 		var entry = {action: action};
-		entry.maxCount = parseInt(opts.maxCount);
+		entry.maxCount = parseInt(opts.maxCount, 10);
 		entry.maxCount < 0 && (entry.maxCount = NaN);
 		entry.count = 0;
 		if (entry.maxCount !== 0) {
@@ -101,7 +103,7 @@
 	function forSelected(selector, fn) {
 		// Process selector argument
 		if (!selector) {
-			selector = "";
+			selector = '';
 		} else if (selector instanceof Element || selector instanceof Spoiler) {
 			selector = [selector];
 		}
@@ -115,7 +117,7 @@
 		if (typeof selector === 'string') {
 			// If selector is a string, match Spoiler entries against it
 			Spoilers.data.forEach(function(spoiler, elt) {
-				if (selector === "" || elt.matches(selector)) {
+				if (selector === '' || elt.matches(selector)) {
 					result.set(spoiler, fn.apply(spoiler, args.map(argProc, spoiler)));
 				}
 			});
@@ -148,7 +150,9 @@
 			var doToggle = function() {
 				Spoilers.toggle(this);
 			};
-			var createPseudoButtons = PseudoButtons && typeof PseudoButtons.create === 'function';
+			var createPseudoButtons =
+				(typeof PseudoButtons        === 'object'  ) &&
+				(typeof PseudoButtons.create === 'function');
 			// Process list of elements
 			var spoilers = [];
 			Array.prototype.forEach.call(elts, function(elt) {
@@ -175,10 +179,12 @@
 			return spoilers;
 		},
 		set: function(selector, show, save) {
-			return forSelected(selector, Spoiler.prototype.set, {value: show, evalFunc: true}, {value: save, evalFunc: true});
+			return forSelected(selector, Spoiler.prototype.set,
+				{value: show, evalFunc: true}, {value: save, evalFunc: true});
 		},
 		toggle: function(selector, save) {
-			return forSelected(selector, Spoiler.prototype.toggle, {value: save, evalFunc: true});
+			return forSelected(selector, Spoiler.prototype.toggle,
+				{value: save, evalFunc: true});
 		},
 		load: function(selector) {
 			return forSelected(selector, Spoiler.prototype.load);
@@ -190,10 +196,12 @@
 			return forSelected(selector, Spoiler.prototype.unsave);
 		},
 		addChangeListener: function(selector, action, opts) {
-			return forSelected(selector, Spoiler.prototype.addChangeListener, {value: action}, {value: opts, evalFunc: true});
+			return forSelected(selector, Spoiler.prototype.addChangeListener,
+				{value: action}, {value: opts, evalFunc: true});
 		},
 		removeChangeListener: function(selector, entry) {
-			return forSelected(selector, Spoiler.prototype.removeChangeListener, {value: entry, evalFunc: true});
+			return forSelected(selector, Spoiler.prototype.removeChangeListener,
+				{value: entry, evalFunc: true});
 		},
 		data: new Map()
 	};

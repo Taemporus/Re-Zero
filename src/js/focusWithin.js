@@ -1,5 +1,5 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
 (function() {
 	'use strict';
@@ -18,7 +18,7 @@
 		if (typeof options !== 'object' || options === null) {
 			options = {};
 		}
-		this._fvPolyfilled = ("fvPolyfilled" in options) ? Boolean(options.fvPolyfilled) : true;
+		this._fvPolyfilled = ('fvPolyfilled' in options) ? Boolean(options.fvPolyfilled) : true;
 		this.callback = (typeof options.callback === 'function') ? options.callback : function() {};
 		// Focus events
 		this._focusHandler = FocusWithinObserver._focusHandler.bind(this);
@@ -66,18 +66,20 @@
 				var changes = [];
 				var container = this.container;
 				// focus-within
-				var fwOld = container.classList.contains("focus-within");
+				var fwOld = container.classList.contains('focus-within');
 				var fwNew = this.focus.size > 0;
 				if (fwOld !== fwNew) {
-					fwNew ? container.classList.add("focus-within") : container.classList.remove("focus-within");
-					changes.push({property: "focusWithin", oldValue: fwOld, newValue: fwNew});
+					fwNew ? container.classList.add('focus-within') : container.classList.remove('focus-within');
+					changes.push({property: 'focusWithin', oldValue: fwOld, newValue: fwNew});
 				}
 				// focus-visible-within
-				var fvwOld = container.classList.contains("focus-visible-within");
+				var fvwOld = container.classList.contains('focus-visible-within');
 				var fvwNew = this.focusVisibleClass.size + this.focusVisiblePseudoClass.size > 0;
 				if (fvwOld !== fvwNew) {
-					fvwNew ? container.classList.add("focus-visible-within") : container.classList.remove("focus-visible-within");
-					changes.push({property: "focusVisibleWithin", oldValue: fvwOld, newValue: fvwNew});
+					fvwNew
+						? container.classList.add   ('focus-visible-within')
+						: container.classList.remove('focus-visible-within');
+					changes.push({property: 'focusVisibleWithin', oldValue: fvwOld, newValue: fvwNew});
 				}
 				// Execute callback
 				if (changes.length) {
@@ -95,7 +97,7 @@
 		var elt = evt.currentTarget;
 		this.focus.add(elt);
 		var focusVisible;
-		try {focusVisible = elt.matches(":focus-visible");} catch (err) {focusVisible = false;}
+		try {focusVisible = elt.matches(':focus-visible');} catch (err) {focusVisible = false;}
 		if (focusVisible) {
 			this.focusVisiblePseudoClass.add(elt);
 		}
@@ -110,7 +112,7 @@
 	FocusWithinObserver._fvPolyfillHandler = function(entries) {
 		var changed = false;
 		entries.forEach(function(entry) {
-			if (entry.target.classList.contains("focus-visible")) {
+			if (entry.target.classList.contains('focus-visible')) {
 				changed = (this.focusVisibleClass.size < this.focusVisibleClass.add(entry.target).size) || changed;
 			} else {
 				changed = this.focusVisibleClass.delete(entry.target) || changed;

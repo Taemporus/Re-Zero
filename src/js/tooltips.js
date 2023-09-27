@@ -1,8 +1,11 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
+
+/* eslint-disable no-cond-assign */
 (function() {
 	'use strict';
+	var tippy;
 	function TooltipData(owner, instance) {
 		this.owner = (owner instanceof Element) ? owner : void 0;
 		this.instance = instance;
@@ -10,7 +13,9 @@
 		this.tooltip = instance.popper.getElementsByClassName('tippy-content')[0];
 		this.ancestors = [];
 		this.descendants = [];
-		this.showOnTouch = this.owner.hasAttribute("data-tooltip-touch") && this.owner.getAttribute("data-tooltip-touch").toLowerCase() !== "false";
+		this.showOnTouch =
+			this.owner.hasAttribute('data-tooltip-touch') &&
+			this.owner.getAttribute('data-tooltip-touch').toLowerCase() !== 'false';
 		this.touched = false;
 	}
 	var Tooltips = {
@@ -18,14 +23,14 @@
 		 * Initialize each element with a "data-tippy-content" attribute
 		 */
 		init: function() {
-			var elts = document.querySelectorAll("[data-tippy-content]:not([data-tippy-content=''])");
+			tippy = window.tippy;
+			var elts = document.querySelectorAll('[data-tippy-content]:not([data-tippy-content=""])');
 			Array.prototype.forEach.call(elts, function(elt) {
-				if (!elt.hasAttribute('tabindex'))
-					elt.setAttribute('tabindex', 0);
+				elt.hasAttribute('tabindex') || elt.setAttribute('tabindex', 0);
 			});
 			var tips = tippy(elts, {
 				appendTo: function(elt) {
-					var parentId = elt.getAttribute("data-tooltip-parent");
+					var parentId = elt.getAttribute('data-tooltip-parent');
 					return parentId ? (document.getElementById(parentId) || document.body) : document.body;
 				},
 				aria: {
@@ -37,7 +42,8 @@
 				hideOnClick: false,
 				trigger: 'manual',
 				onShow: function(instance) {
-					// Increase 'armed' state: will become fully 'armed' once the specified time has elapsed and any CSS transition is finished
+					// Increase 'armed' state
+					// Will become fully 'armed' once the specified time has elapsed and any CSS transition is finished
 					instance.disarm();
 					instance.arm();
 					instance.armTimer = setTimeout(function() {
@@ -49,17 +55,19 @@
 					delete instance.hideTimer;
 				},
 				onShown: function(instance) {
-					// Increase 'armed' state: will become fully 'armed' once the time specified in 'onShow' has elapsed (if it has not yet happened)
+					// Increase 'armed' state
+					// Will become fully 'armed' once the time specified in 'onShow' has elapsed (possibly now)
 					instance.arm();
 				},
 				onHide: function(instance) {
 					// Set 'armed' state to its initial value
 					instance.disarm();
-					// Failsafe to ensure tooltip is eventually removed from DOM (issue on IE) (update delay to be higher than any relevant transition duration)
+					// Failsafe to ensure tooltip is eventually removed from DOM (issue on IE)
+					// Update delay to be higher than any relevant transition duration
 					instance.hideTimer = setTimeout(function() {
-						var parent;
 						instance.unmount();
-						if (parent = instance.popper.parentNode) {
+						var parent = instance.popper.parentNode;
+						if (parent) {
 							parent.removeChild(instance.popper);
 						}
 						delete instance.hideTimer;
@@ -75,25 +83,25 @@
 				instance.armedState = 0;
 				instance.arm = function() {
 					instance.armedState++;
-					instance.reference.classList.add("arming");
+					instance.reference.classList.add('arming');
 					if (instance.armedState >= 3) {
-						instance.reference.classList.add("armed");
+						instance.reference.classList.add('armed');
 					}
 				};
 				instance.disarm = function() {
 					clearTimeout(instance.armTimer);
 					delete instance.armTimer;
 					instance.armedState = 0;
-					instance.reference.classList.remove("arming");
-					instance.reference.classList.remove("armed");
+					instance.reference.classList.remove('arming');
+					instance.reference.classList.remove('armed');
 				};
 				// Triggers
 				var triggerHandler = function(evt) {
 					switch (evt.type) {
 						case 'focus':
-							var focusVisible;
-							try {focusVisible = tooltipData.owner.matches(":focus-visible");} catch (err) {focusVisible = false;}
-							focusVisible = focusVisible || tooltipData.owner.classList.contains("focus-visible");
+							var focusVisible = false;
+							try {focusVisible = tooltipData.owner.matches(':focus-visible');} catch (err) {}
+							focusVisible = focusVisible || tooltipData.owner.classList.contains('focus-visible');
 							if (focusVisible) {
 								Tooltips.focused = tooltipData;
 							}
@@ -131,7 +139,7 @@
 			});
 			// Click handling
 			Tooltips.data.forEach(function(tooltipData, owner) {
-				// Ensure tooltip is shown before a click can be registered in case of touch input (if the tooltip should be shown at all)
+				// Ensure tooltip is shown before a click can be registered in case of touch input
 				var listener = function(evt) {
 					if (!evt.deepestTooltip) {
 						var node = evt.target;
@@ -141,7 +149,13 @@
 							}
 						} while (node = node.parentNode);
 					}
-					if (evt.deepestTooltip.owner === owner && tippy.currentInput.isTouch && tooltipData.showOnTouch && !owner.classList.contains("armed")) {
+					if (
+						evt.deepestTooltip &&
+						evt.deepestTooltip.owner === owner &&
+						tippy.currentInput.isTouch &&
+						tooltipData.showOnTouch &&
+						!owner.classList.contains('armed')
+					) {
 						evt.preventDefault();
 						evt.stopPropagation();
 					}
@@ -163,7 +177,7 @@
 			if (Tooltips.focused) {
 				shown.add(Tooltips.focused);
 			}
-			// If one or more elements with tooltips are hovered, show the one added last that has no hovered descendants with tooltips
+			// Show tooltip of the last added minimal hovered tooltip owner 
 			if (Tooltips.hovered.size > 0) {
 				// Invert insertion order
 				var hoveredA = [];

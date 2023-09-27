@@ -1,14 +1,19 @@
+/**
+* (c) 2023 Taemporus
+*/
 (function() {
 	'use strict';
+	var performance = window.performance;
 	var TouchDetector = {
 		isTouch: false,
 		lastMouseMoveTime: 0
 	};
 	function onTouchStart() {
-		if (TouchDetector.isTouch)
+		if (TouchDetector.isTouch) {
 			return;
+		}
 		TouchDetector.isTouch = true;
-		if (window.performance) {
+		if (performance) {
 			document.addEventListener('mousemove', onMouseMove, true);
 		}
 	}

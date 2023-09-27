@@ -14,14 +14,21 @@ After modifying the configuration in `package.json` or the source files in `css/
 
 ## Credits
 
-### Plugins and libraries
-
-- [anime.js](https://animejs.com/) (3.2.1)
-- [Normalize.css](https://necolas.github.io/normalize.css/) (8.0.1)
-- [Popper.js](https://popper.js.org/) (2.10.2)
-- [Tippy.js](https://atomiks.github.io/tippyjs/) (6.3.7)
-
 ### Images
 
 - [Artofrob](https://www.deviantart.com/artofrob/art/Echidna-from-RE-Zero-852291451)
 - [Neps](https://www.pixiv.net/en/artworks/59122273)
+
+### Plugins and libraries
+
+- [anime.js](https://animejs.com/) (3.2.1)
+- [Modernizr](https://github.com/Modernizr/Modernizr/) (3.13.0)
+- [Normalize.css](https://necolas.github.io/normalize.css/) (8.0.1)
+- [Popper.js](https://popper.js.org/) (2.11.8)
+- [Tippy.js](https://atomiks.github.io/tippyjs/) (6.3.7)
+
+### Polyfills
+
+- [focus-visible](https://github.com/WICG/focus-visible/) (5.2.0)
+- [polyfill-library](https://github.com/financial-times/polyfill-library/) (4.8.0) (along with the [online service](https://polyfill.io/))
+- [scrollingElement](https://github.com/mathiasbynens/document.scrollingElement) (1.5.2)

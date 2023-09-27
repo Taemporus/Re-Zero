@@ -1,5 +1,6 @@
-/* (c) 2021 Taemporus */
+/* (c) 2023 Taemporus */
 
+@use "sass:color";
 @use "sass:math";
 
 @function max($numbers...) {
@@ -12,72 +13,74 @@ $is-touch: "(hover: none), (pointer: coarse)";
 
 /* CONFIGURATION */
 
+// stylelint-disable indentation
+
 // COLORS
 // Background & generic stuff
-$color-background:                    rgb( 44,  44,  44);
-$color-scroll-track:                  rgb(128, 128, 128);
-$color-scroll-thumb:                  rgb( 80,  80,  80);
-$color-scroll-thumb-hover:            rgb( 48,  48,  48);
-$color-scroll-thumb-active:           rgb( 32,  32,  32);
-$color-focus-outline:                 rgb( 34,  34,  34);
+$color-background:                    rgb( 44  44  44);
+$color-scroll-track:                  rgb(128 128 128);
+$color-scroll-thumb:                  rgb( 80  80  80);
+$color-scroll-thumb-hover:            rgb( 48  48  48);
+$color-scroll-thumb-active:           rgb( 32  32  32);
+$color-focus-outline:                 rgb( 34  34  34);
 $focus-outline:                       1px auto $color-focus-outline;
 // Navigation
-$color-navbar-edge:                   rgb( 96,  56,  56);
-$color-navbar-background:             rgb( 64,  32,  48);
-$color-navbar-current:                rgb( 80,  32, 160);
-$color-navbar-text:                   rgb(255, 128, 128);
-$color-navbar-highlight:              rgb(255, 255, 255);
+$color-navbar-edge:                   rgb( 96  56  56);
+$color-navbar-background:             rgb( 64  32  48);
+$color-navbar-current:                rgb( 80  32 160);
+$color-navbar-text:                   rgb(255 128 128);
+$color-navbar-highlight:              rgb(255 255 255);
 // Menu
-$color-menu-background:               rgb( 93,  45,  61);
-$color-menu-edge:                     rgb( 80,  32,  48);
-$color-menu-text:                     rgb(255, 128, 128);
-$color-menu-highlight:                rgb(255, 255, 255);
-$color-menu-highlight-bg:             rgb(128,  64,  80);
-$color-menu-item-button-light:        rgb(136, 136, 255);
-$color-menu-item-button-dark:         rgb( 85,  85, 160);
-$color-menu-item-button-text:         rgb(255, 255, 255);
+$color-menu-background:               rgb( 93  45  61);
+$color-menu-edge:                     rgb( 80  32  48);
+$color-menu-text:                     rgb(255 128 128);
+$color-menu-highlight:                rgb(255 255 255);
+$color-menu-highlight-bg:             rgb(128  64  80);
+$color-menu-item-button-light:        rgb(136 136 255);
+$color-menu-item-button-dark:         rgb( 85  85 160);
+$color-menu-item-button-text:         rgb(255 255 255);
 // Main element
-$color-header-background:             rgba(64,  64,  64, 0.9);
-$color-header-text:                   rgb(255,  96,  96);
-$color-content-background:            rgb( 34,  34,  34);
-$color-content-text:                  rgb(224, 224, 224);
+$color-header-background:             rgb( 64  64  64 / 0.9);
+$color-header-text:                   rgb(255  96  96);
+$color-content-background:            rgb( 34  34  34);
+$color-content-text:                  rgb(224 224 224);
 $color-footer-background:             $color-header-background;
-$color-footer-text:                   rgb(128, 128, 208);
-$color-footer-link-text:              rgb(255,  96,  96);
-$color-footer-link-highlight:         rgb(255, 255, 255);
-$color-section-title-bg:              rgb(  0,   0,  85);
-$color-section-title-text:            rgb(255, 136, 136);
-$color-section-title-highlight:       rgb(255, 255, 255);
-$color-content-link-text:             rgb(255, 160, 160);
-$color-content-link-highlight:        rgb(255, 255, 255);
+$color-footer-text:                   rgb(128 128 208);
+$color-footer-link-text:              rgb(255  96  96);
+$color-footer-link-highlight:         rgb(255 255 255);
+$color-section-title-bg:              rgb(  0   0  85);
+$color-section-title-text:            rgb(255 136 136);
+$color-section-title-highlight:       rgb(255 255 255);
+$color-content-link-text:             rgb(255 160 160);
+$color-content-link-highlight:        rgb(255 255 255);
 // Special content elements (quotes etc.)
-$color-quote-bg:                      rgb( 88,  56,  88);
+$color-quote-bg:                      rgb( 88  56  88);
 $color-quote-text:                    inherit;
-$color-subpanel-title:                rgb(255, 160, 160);
-$color-subpanel-highlight:            rgb(255, 255, 255);
-$color-selection-bg:                  rgb( 48,  64, 168);
-$color-chapters-border:               rgb(128, 128, 128);
-$color-chapters-wn-bg:                rgb(160,  16,  16);
-$color-chapters-ln-bg:                rgb( 16,  16, 160);
-$color-chapters-type-text:            rgb(255, 192, 192);
-$color-chapters-num-bg:               rgb( 64,  64,  64);
-$color-chapters-num-text:             rgb(224, 224, 224);
-$color-spoiler-highlight:             rgb(255, 255, 255);
-$color-tooltip-background:            rgb(255,  96,  96);
-$color-tooltip-text:                  rgb(255, 255, 255);
+$color-subpanel-title:                rgb(255 160 160);
+$color-subpanel-highlight:            rgb(255 255 255);
+$color-selection-bg:                  rgb( 48  64 168);
+$color-chapters-border:               rgb(128 128 128);
+$color-chapters-wn-bg:                rgb(160  16  16);
+$color-chapters-ln-bg:                rgb( 16  16 160);
+$color-chapters-type-text:            rgb(255 192 192);
+$color-chapters-num-bg:               rgb( 64  64  64);
+$color-chapters-num-text:             rgb(224 224 224);
+$color-spoiler-highlight:             rgb(255 255 255);
+$color-tooltip-background:            rgb(255  96  96);
+$color-tooltip-text:                  rgb(255 255 255);
 // Printed
-$color-print-title:                   rgb(255,   0,   0);
-$color-print-section-title:           rgb(255,   0,   0);
-$color-print-content-text:            rgb(  0,   0,   0);
+$color-print-title:                   rgb(255   0   0);
+$color-print-section-title:           rgb(255   0   0);
+$color-print-content-text:            rgb(  0   0   0);
 $color-print-link-text:               inherit;
-$color-print-quote-bg:                rgb(208, 208, 208);
-$color-print-subpanel-title:          rgb(224,   0,   0);
-$color-print-chapters-bg:             rgb(240, 240, 240);
-$color-print-chapters-text:           rgb(  0,   0,   0);
-$color-print-chapters-border:         rgb(  0,   0,   0);
-$color-print-chapters-type-bg:        rgb(208, 208, 208);
+$color-print-quote-bg:                rgb(208 208 208);
+$color-print-subpanel-title:          rgb(224   0   0);
+$color-print-chapters-bg:             rgb(240 240 240);
+$color-print-chapters-text:           rgb(  0   0   0);
+$color-print-chapters-border:         rgb(  0   0   0);
+$color-print-chapters-type-bg:        rgb(208 208 208);
 $color-print-spoiler-text:            inherit;
-$color-print-spoiler-alt:             rgb(255,  64,  64);
+$color-print-spoiler-alt:             rgb(255  64  64);
 
 // FONTS
 // Base font
@@ -92,7 +95,7 @@ $font-size-menu-level1:               1em;
 $font-size-menu-level2:               0.85em;
 $font-size-menu-level3:               0.9em;
 $font-size-menu-item-button:          1rem;
-$opacity-menu-item-button-hidden:     0;
+$opacity-menu-item-button-hidden:     0.0;
 $opacity-menu-item-button-visible:    0.5;
 $opacity-menu-item-button-selected:   1.0;
 // Main element
@@ -173,7 +176,7 @@ $size-y-collapse-icon:                0.8em;
 $gap-x-collapse-icon-near:            0.5em;
 $padding-x-section:                   math.div($size-x-collapse-icon, 1em)
                                         * math.div($font-size-section-title, 1em)
-                                        * math.div($font-size-content, 1em)
+                                        * math.div($font-size-content,       1em)
                                         * $font-size-main
                                       + 2 * $padding-x-section-title;
 $padding-y-section:                   1.2rem;
@@ -208,6 +211,8 @@ $padding-y-print-section-title:       0.2rem;
 $transition-sidebar-expand:           0.3s;
 $transition-menu-open:                0.6s;
 
+// stylelint-enable indentation
+
 /* STYLESHEET */
 
 /* Basic structure */
@@ -215,27 +220,39 @@ $transition-menu-open:                0.6s;
 	font-size: $font-size-max-root;
 }
 @media (max-width: $size-x-min-main - 1px) {
-	:root {font-size: math.div($font-size-max-root, $size-x-min-main) * 100vw}
+	:root { font-size: math.div($font-size-max-root, $size-x-min-main) * 100vw; }
 }
 @media (max-width: math.div($font-size-min-root, $font-size-max-root) * $size-x-min-main - 1px) {
-	:root {font-size: $font-size-min-root}
+	:root { font-size: $font-size-min-root; }
 }
 body {
 	background-color: $color-background;
-	background-image: url(../img/background.jpg);
 	background-size: 100% auto;
 	background-repeat: repeat-y;
 	background-attachment: fixed;
 	background-position: center;
 }
+:root {
+	&.no-webp body {
+		background-image: url(../img/background-3840.jpg);
+		@media (max-width: 1920px) {
+			background-image: url(../img/background-1920.jpg);
+		}
+	}
+	&.webp body {
+		background-image: url(../img/background-3840.webp);
+		@media (max-width: 1920px) {
+			background-image: url(../img/background-1920.webp);
+		}
+	}
+}
 .main {
 	display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
+	flex-flow: column nowrap;
 	position: relative;
 	margin: 0 auto;
 	width: 100% * $size-x-ratio-main;
-	min-width: $size-x-min-main;
+	min-width : $size-x-min-main;
 	min-height: 100vh;
 	font-size: $font-size-main;
 }
@@ -263,7 +280,7 @@ body::-webkit-scrollbar-thumb:hover {
 body::-webkit-scrollbar-thumb:active {
 	background: $color-scroll-thumb-active;
 }
-html, body {
+:root, body {
 	scrollbar-width: auto;
 	scrollbar-color: $color-scroll-track $color-scroll-thumb;
 }
@@ -285,9 +302,9 @@ html, body {
 /* Navigation */
 #navbar_container {
 	position: fixed;
-	top: 0;
+	top : 0;
 	left: 0;
-	width: (1 - $size-x-ratio-main) * 0.5 * 100%;
+	width : (1 - $size-x-ratio-main) * 0.5 * 100%;
 	height: 100vh;
 	z-index: 11;
 	overflow: hidden;
@@ -298,11 +315,11 @@ html, body {
 }
 #navbar {
 	position: absolute;
-	top: 0;
+	top  : 0;
 	right: 0;
 	box-sizing: border-box;
 	padding: 0 1px;
-	width: $size-x-sidebar-collapsed;
+	width : $size-x-sidebar-collapsed;
 	height: 100vh;
 	background-color: $color-navbar-edge;
 	transition: $transition-sidebar-expand;
@@ -316,7 +333,7 @@ html, body {
 	}
 }
 #navbar_contents {
-	width: 100%;
+	width : 100%;
 	height: 100%;
 	display: grid;
 	grid-row-gap: 1px;
@@ -355,7 +372,6 @@ html, body {
 	}
 }
 #navbar .navitem {
-	/*position: static;*/
 	margin: 0;
 	border: none;
 	padding: $padding-y-navbar-item $padding-x-navbar-item;
@@ -366,7 +382,7 @@ html, body {
 	outline: none;
 	background-color: $color-navbar-background;
 	cursor: pointer;
-	font-family: "Arial", sans-serif;
+	font-family: Arial, sans-serif;
 	transition: inherit;
 	transition-property: none;
 	user-select: none;
@@ -388,8 +404,8 @@ html, body {
 		opacity: 1;
 	}
 
-	@mixin normal    {color: $color-navbar-text;}
-	@mixin highlight {color: $color-navbar-highlight;}
+	@mixin normal    { color: $color-navbar-text;      }
+	@mixin highlight { color: $color-navbar-highlight; }
 
 	@include normal;
 	.navitem:hover > &,
@@ -419,8 +435,8 @@ html, body {
 		opacity: 1;
 	}
 
-	@mixin normal    {background-position-y: 0;}
-	@mixin highlight {background-position-y: -2em;}
+	@mixin normal    { background-position-y: 0;    }
+	@mixin highlight { background-position-y: -2em; }
 
 	@include normal;
 	.navitem:hover > &,
@@ -436,10 +452,10 @@ html, body {
 		}
 	}
 }
-#icon_info        {background-image: url(../img/icons/info.svg);}
-#icon_manual      {background-image: url(../img/icons/manual.svg);}
-#icon_speculation {background-image: url(../img/icons/lightbulb.svg);}
-#icon_book        {background-image: url(../img/icons/book.svg);}
+#icon_info        { background-image: url(../img/icons/info.svg     ); }
+#icon_manual      { background-image: url(../img/icons/manual.svg   ); }
+#icon_speculation { background-image: url(../img/icons/lightbulb.svg); }
+#icon_book        { background-image: url(../img/icons/book.svg     ); }
 /* Menu */
 #menu_container {
 	position: fixed;
@@ -456,7 +472,7 @@ html, body {
 }
 #menu {
 	position: absolute;
-	top: 0;
+	top : 0;
 	left: 0;
 	width: calc(100% - $size-x-sidebar-expanded);
 	max-width: $size-x-max-menu;
@@ -493,7 +509,7 @@ html, body {
 }
 #menu_button {
 	box-sizing: border-box;
-	width: 100%;
+	width : 100%;
 	height: 100%;
 	background-color: $color-menu-edge;
 	cursor: pointer;
@@ -545,14 +561,14 @@ html, body {
 	}
 }
 #menu_content_wrapper {
-	width: 100%;
+	width : 100%;
 	height: 100%;
 	overflow: hidden;
 }
 #menu_content {
 	position: relative;
 	box-sizing: border-box;
-	width: 100%;
+	width : 100%;
 	height: 100%;
 	padding: $padding-y-menu $padding-x-menu;
 	border-left: $size-x-menu-edge solid $color-menu-edge;
@@ -561,7 +577,7 @@ html, body {
 	background-color: $color-menu-background;
 	color: $color-menu-text;
 	font-size: 1.4em;
-	font-family: "Arial", sans-serif;
+	font-family: Arial, sans-serif;
 	transition: $transition-menu-open;
 	transition-property: visibility;
 	overflow-y: scroll;
@@ -576,14 +592,14 @@ html, body {
 		visibility: visible;
 	}
 }
-@media (max-width:
+@media (max-width: (
 	$size-x-min-main
 	+ 2 * (
 		$size-x-sidebar-expanded
 		+ math.div($size-x-min-menu, 1rem) * $font-size-max-root
 	)
 	+ $thickness-scroll
-) {
+)) {
 	#menu_container {
 		overflow: visible;
 		visibility: hidden;
@@ -637,12 +653,12 @@ html, body {
 		}
 	}
 }
-@media (max-width:
+@media (max-width: (
 	$size-x-sidebar-expanded
 	+ math.div($size-x-min-menu, 1rem) * $font-size-min-root
-) {
+)) {
 	#menu {
-		width: calc(100vw - $size-x-sidebar-expanded);
+		width    : calc(100vw - $size-x-sidebar-expanded);
 		min-width: calc(100vw - $size-x-sidebar-expanded);
 		max-width: calc(100vw - $size-x-sidebar-expanded);
 	}
@@ -656,9 +672,9 @@ html, body {
 	text-align: left;
 	background: transparent;
 
-	@mixin normal    {color: $color-menu-text;}
-	@mixin highlight {color: $color-menu-highlight;}
-	
+	@mixin normal    { color: $color-menu-text;      }
+	@mixin highlight { color: $color-menu-highlight; }
+
 	@include normal;
 
 	&:hover,
@@ -667,7 +683,7 @@ html, body {
 	}
 	&.interactive {
 		cursor: pointer;
-	
+
 		&:hover,
 		&.focus-visible {
 			@include highlight;
@@ -707,7 +723,7 @@ html, body {
 	}
 }
 .submenu-main > .menu-item {
-	padding-top: $padding-y-menu-heading;
+	padding-top   : $padding-y-menu-heading;
 	padding-bottom: $padding-y-menu-heading;
 	font-size: $font-size-menu-heading;
 	font-weight: bold;
@@ -725,8 +741,15 @@ html, body {
 	height: $size-y-menu-item-button;
 	text-align: center;
 	font-size: $font-size-menu-item-button;
-	background-color: mix($color-menu-item-button-light, $color-menu-item-button-dark);
-	background-image: linear-gradient(to bottom, $color-menu-item-button-light, $color-menu-item-button-dark);
+	background-color: color.mix(
+		$color-menu-item-button-light,
+		$color-menu-item-button-dark
+	);
+	background-image: linear-gradient(
+		to bottom,
+		$color-menu-item-button-light,
+		$color-menu-item-button-dark
+	);
 	color: $color-menu-item-button-text;
 	cursor: pointer;
 
@@ -748,7 +771,11 @@ html, body {
 	}
 	&:active {
 		background-color: $color-menu-item-button-light;
-		background-image: linear-gradient(to bottom, $color-menu-item-button-dark, $color-menu-item-button-light);
+		background-image: linear-gradient(
+			to bottom,
+			$color-menu-item-button-dark,
+			$color-menu-item-button-light
+		);
 	}
 
 	@media #{$is-touch} {
@@ -760,7 +787,7 @@ html, body {
 		}
 	}
 }
-#menu input[type='number'] {
+#menu input[type="number"] {
 	background-color: $color-menu-edge;
 	color: $color-menu-text;
 	border: 1px solid currentColor;
@@ -873,7 +900,7 @@ h5 {
 	*:last-child {
 		margin-bottom: 0;
 	}
-	
+
 	.highlight {
 		text-align: center;
 		font-weight: bold;
@@ -942,8 +969,8 @@ em {
 
 	.quote,
 	.excerpt {
-		margin-left: $margin-x-quote;
-		margin-right: $margin-x-quote;
+		margin-left  : $margin-x-quote;
+		margin-right : $margin-x-quote;
 		border-radius: $corner-r-quote;
 		background-color: $color-quote-bg;
 
@@ -953,7 +980,7 @@ em {
 	}
 	.quote {
 		display: flex;
-		flex-direction: row;
+		flex-flow: row nowrap;
 		align-items: center;
 		justify-content: space-between;
 		padding: $padding-y-quote $padding-x-quote-outer;
@@ -993,7 +1020,7 @@ em {
 }
 .dialogue {
 	> p {
-		margin-top: $margin-y-dialogue-line;
+		margin-top   : $margin-y-dialogue-line;
 		margin-bottom: $margin-y-dialogue-line;
 
 		&:first-child {
@@ -1115,35 +1142,39 @@ em {
 
 		@at-root .panel-major#{&} {
 			@include set-highlight using ($on) {
-				@if $on {color: $color-section-title-highlight;}
-				@else   {color: $color-section-title-text;}
-			};
+				@if $on { color: $color-section-title-highlight; }
+				@else   { color: $color-section-title-text;      }
+			}
 			outline: none;
-			padding-right: math.div($size-x-collapse-icon, 1em) * math.div($font-size-section-title, 1em) * math.div($font-size-content, 1em) * $font-size-main + 2 * $padding-x-section-title;
+			padding-right:
+				math.div($size-x-collapse-icon, 1em)
+				* math.div($font-size-section-title, 1em)
+				* math.div($font-size-content, 1em)
+				* $font-size-main
+				+ 2 * $padding-x-section-title;
 		}
 		@at-root
 		.panel-minor#{&},
 		.submenu#{&} {
 			display: flex;
-			flex-direction: row;
-			flex-wrap: nowrap;
+			flex-flow: row nowrap;
 			justify-content: flex-start;
 			align-items: center;
 		}
 		@at-root .panel-minor#{&} {
 			@include set-highlight using ($on) {
-				@if $on {color: $color-subpanel-highlight;}
-				@else   {color: $color-subpanel-title;}
-			};
+				@if $on { color: $color-subpanel-highlight; }
+				@else   { color: $color-subpanel-title;     }
+			}
 			@include set-highlight($touchHover: true) using ($on) {
 				@at-root #{selector-nest(#{selector-append(".show",&)}, "~ .collapse-content")} {
-					@if $on {color: $color-subpanel-highlight;}
-					@else   {color: inherit;}
+					@if $on { color: $color-subpanel-highlight; }
+					@else   { color: inherit;                   }
 
-					@if $on {outline: $focus-outline;}
-					@else   {outline: none;}
+					@if $on { outline: $focus-outline; }
+					@else   { outline: none;           }
 				}
-			};
+			}
 
 			outline-offset: $outline-offset-subpanel;
 			&.focus-visible {
@@ -1158,9 +1189,9 @@ em {
 		}
 		@at-root .submenu#{&} {
 			@include set-highlight using ($on) {
-				@if $on {color: $color-menu-highlight;}
-				@else   {color: $color-menu-text;}
-			};
+				@if $on { color: $color-menu-highlight; }
+				@else   { color: $color-menu-text;      }
+			}
 			outline: none;
 			@at-root .submenu-main#{&} {
 				justify-content: center;
@@ -1175,7 +1206,7 @@ em {
 			}
 		}
 		&::after {
-			width: $size-x-collapse-icon;
+			width : $size-x-collapse-icon;
 			height: $size-y-collapse-icon;
 			background-image: url(../img/icons/toggle.svg);
 			background-repeat: no-repeat;
@@ -1203,8 +1234,8 @@ em {
 		}
 
 		@include set-highlight using ($on) {
-			@if $on {&::after {background-position-y: -$size-y-collapse-icon;}}
-			@else   {&::after {background-position-y: 0;}}
+			@if $on { &::after { background-position-y: -$size-y-collapse-icon; }}
+			@else   { &::after { background-position-y: 0;                      }}
 		}
 	}
 	> .collapse-content {
@@ -1228,6 +1259,15 @@ em {
 }
 .tippy-arrow {
 	color: $color-tooltip-background;
+}
+#tooltip_fixed_root {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+	height: 0;
+	overflow: visible;
+	z-index: 9999;
 }
 /* Print */
 @media print {
@@ -1279,7 +1319,7 @@ em {
 		> .panel-heading {
 			background: transparent !important;
 			color: $color-print-title !important;
-			padding-top: $padding-y-print-section-title !important;
+			padding-top   : $padding-y-print-section-title !important;
 			padding-bottom: $padding-y-print-section-title !important;
 		}
 		> .panel-body {
@@ -1293,8 +1333,8 @@ em {
 	}
 	.chapters {
 		* {
-			background: $color-print-chapters-bg !important;
-			color: $color-print-chapters-text !important;
+			background  : $color-print-chapters-bg !important;
+			color       : $color-print-chapters-text !important;
 			border-color: $color-print-chapters-border !important;
 		}
 		td {
@@ -1323,7 +1363,7 @@ em {
 		color: $color-print-spoiler-text !important;
 
 		&:not(.show) {
-			font-size: 0em !important;
+			font-size: 0 !important;
 			color: $color-print-spoiler-alt !important;
 			&::after {
 				font-size: 1rem;
@@ -1337,7 +1377,7 @@ em {
 	}
 	.content {
 		column-width: $size-x-print-column;
-		column-gap: $gap-x-print-column;
+		column-gap  : $gap-x-print-column;
 	}
 	/* Fonts */
 	:root {

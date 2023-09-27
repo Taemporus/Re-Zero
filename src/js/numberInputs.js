@@ -1,16 +1,16 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
 (function() {
 	'use strict';
 	function NumberInput(element, type) {
 		this.element = (element instanceof Element) ? element : void 0;
-		this.type = type ? String(type) : "";
+		this.type = type ? String(type) : '';
 		// Default state
 		this.value = void 0;
 		this.load() || this.set();
 		// Enforce restrictions on manual change
-		this.element.addEventListener('change', (function(evt) {
+		this.element.addEventListener('change', (function() {
 			this.set();
 		}).bind(this));
 		// State change handlers
@@ -25,14 +25,14 @@
 		// Choose parse method
 		var parse;
 		switch (this.type) {
-			case "int": parse = parseInt; break;
-			case "float": parse = parseFloat; break;
+			case 'int'  : parse = parseInt;   break;
+			case 'float': parse = parseFloat; break;
 			default: parse = parseFloat;
 		}
 		// Parse value and bounds
 		value = parse(value, 10);
-		var min = (elt.min === "") ? Number.NaN : parse(elt.min, 10);
-		var max = (elt.max === "") ? Number.NaN : parse(elt.max, 10);
+		var min = (elt.min === '') ? Number.NaN : parse(elt.min, 10);
+		var max = (elt.max === '') ? Number.NaN : parse(elt.max, 10);
 		// Clamp to bounds (prefer minimum if max < min)
 		if (isNaN(value)) {
 			value = isNaN(min) ? (isNaN(max) ? 0 : max) : min;
@@ -53,25 +53,25 @@
 		return value;
 	};
 	NumberInput.prototype.load = function() {
-		var key = this._storageKey("value");
+		var key = this._storageKey('value');
 		var value = key && localStorage.getItem(key);
 		return (typeof value === 'string') ? this.set(value, false) : void 0;
 	};
 	NumberInput.prototype.save = function() {
-		var key = this._storageKey("value");
+		var key = this._storageKey('value');
 		return key ? (localStorage.setItem(key, this.value), this.value) : void 0;
 	};
 	NumberInput.prototype.unsave = function() {
-		var key = this._storageKey("value");
+		var key = this._storageKey('value');
 		return key ? (localStorage.removeItem(key), this.value) : void 0;
 	};
 	NumberInput.prototype._storageKey = function(property) {
-		return this.element.id ? ((window.storagePrefix || "") + "/" + property + "/" + this.element.id) : void 0;
+		return this.element.id ? ((window.storagePrefix || '') + '/' + property + '/' + this.element.id) : void 0;
 	};
 	NumberInput.prototype.addChangeListener = function(action, opts) {
 		typeof opts === 'object' || (opts = {});
 		var entry = {action: action};
-		entry.maxCount = parseInt(opts.maxCount);
+		entry.maxCount = parseInt(opts.maxCount, 10);
 		entry.maxCount < 0 && (entry.maxCount = NaN);
 		entry.count = 0;
 		if (entry.maxCount !== 0) {
@@ -102,7 +102,7 @@
 	function forSelected(selector, fn) {
 		// Process selector argument
 		if (!selector) {
-			selector = "";
+			selector = '';
 		} else if (selector instanceof Element || selector instanceof NumberInput) {
 			selector = [selector];
 		}
@@ -116,7 +116,7 @@
 		if (typeof selector === 'string') {
 			// If selector is a string, match NumberInput entries against it
 			NumberInputs.data.forEach(function(input, elt) {
-				if (selector === "" || elt.matches(selector)) {
+				if (selector === '' || elt.matches(selector)) {
 					result.set(input, fn.apply(input, args.map(argProc, input)));
 				}
 			});
@@ -153,7 +153,7 @@
 					return;
 				}
 				// Filter for 'input' elements with 'number' type
-				if (elt instanceof Element && elt.matches("input[type='number']")) {
+				if (elt instanceof Element && elt.matches('input[type="number"]')) {
 					var input = new NumberInput(elt, type);
 					// Register data for the input element
 					NumberInputs.data.set(elt, input);
@@ -166,7 +166,8 @@
 		},
 		// Set values while enforcing restrictions
 		set: function(selector, value, save) {
-			return forSelected(selector, NumberInput.prototype.set, {value: value, evalFunc: true}, {value: save, evalFunc: true});
+			return forSelected(selector, NumberInput.prototype.set,
+				{value: value, evalFunc: true}, {value: save, evalFunc: true});
 		},
 		load: function(selector) {
 			return forSelected(selector, NumberInput.prototype.load);
@@ -178,10 +179,12 @@
 			return forSelected(selector, NumberInput.prototype.unsave);
 		},
 		addChangeListener: function(selector, action, opts) {
-			return forSelected(selector, NumberInput.prototype.addChangeListener, {value: action}, {value: opts, evalFunc: true});
+			return forSelected(selector, NumberInput.prototype.addChangeListener,
+				{value: action}, {value: opts, evalFunc: true});
 		},
 		removeChangeListener: function(selector, entry) {
-			return forSelected(selector, NumberInput.prototype.removeChangeListener, {value: entry, evalFunc: true});
+			return forSelected(selector, NumberInput.prototype.removeChangeListener,
+				{value: entry, evalFunc: true});
 		},
 		data: new Map()
 	};

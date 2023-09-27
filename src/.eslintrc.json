@@ -1,0 +1,14 @@
+{
+	"env": {
+		"browser": true
+	},
+	"parserOptions": {
+		"ecmaVersion": 5,
+		"sourceType": "script"
+	},
+	"globals": {
+		"Map": "readonly",
+		"Promise": "readonly",
+		"Set": "readonly"
+	}
+}

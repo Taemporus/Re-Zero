@@ -1,5 +1,5 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
 (function() {
 	'use strict';
@@ -10,7 +10,10 @@
 		var list = [], desc = node, checked = false, i = 0, next = node.nextSibling || node.parentNode;
 		do {
 			checked || (list[i++] = desc);
-			desc = (!checked && desc.firstChild) || (checked = false, desc.nextSibling) || (checked = true, desc.parentNode);
+			desc =
+				(!checked         && desc.firstChild ) ||
+				( checked = false ,  desc.nextSibling) ||
+				( checked = true  ,  desc.parentNode );
 		} while (desc !== next);
 		return list;
 	}
@@ -21,8 +24,12 @@
 		this.tuples = new Map();
 		this._buildTuples(this.tuple);
 		// Add appropriate styles to the overlay
-		HeaderOverlay._setOverlayStyle(this.tuple.fixed, [['position', 'fixed'], ['top', "0"], ['box-sizing', 'border-box']]);
-		HeaderOverlay._setOverlayStyle(this.tuple.bottom, [['position', 'absolute'], ['bottom', "0"], ['left', "0"], ['box-sizing', 'border-box']]);
+		HeaderOverlay._setOverlayStyle(this.tuple.fixed,  [
+			['position', 'fixed'   ], ['top',    '0'],                ['box-sizing', 'border-box']
+		]);
+		HeaderOverlay._setOverlayStyle(this.tuple.bottom, [
+			['position', 'absolute'], ['bottom', '0'], ['left', '0'], ['box-sizing', 'border-box']
+		]);
 		// Fix attributes
 		this._fixAttributes();
 		// Overlay is not yet attached to DOM
@@ -38,7 +45,10 @@
 		var observer = new MutationObserver(HeaderOverlay.prototype._updateDOM.bind(this));
 		observer.observe(this.tuple.main, {subtree: true, childList: true, attributes: true, characterData: true});
 		// Monitor the viewport's intersection with the containers
-		observer = new IntersectionObserver(HeaderOverlay.prototype._updateIntersectionInfo.bind(this), {rootMargin: "0px", threshold: [0,1]});
+		observer = new IntersectionObserver(
+			HeaderOverlay.prototype._updateIntersectionInfo.bind(this),
+			{rootMargin: '0px', threshold: [0,1]}
+		);
 		observer.observe(this.container);
 		this.tuple.forAll(function() {
 			observer.observe(this);
@@ -114,8 +124,9 @@
 		// Copy size for all descendant elements
 		var hWidth, hHeight, updated = [];
 		this.tuples.forEach(function(tuple, node) {
-			if (!(node instanceof Element))
+			if (!(node instanceof Element)) {
 				return;
+			}
 			updated.push(tuple);
 			// Get current bounds
 			var bounds = node.getBoundingClientRect();
@@ -126,10 +137,13 @@
 				hHeight = h;
 			}
 			// Set width and height on overlay
-			var wStr = w + "px";
-			var hStr = h + "px";
+			var wStr = w + 'px';
+			var hStr = h + 'px';
 			tuple.forCopies(function() {
-				HeaderOverlay._setOverlayStyle(this, [['width', wStr], ['min-width', wStr], ['max-width', wStr], ['height', hStr], ['min-height', hStr], ['max-height', hStr]]);
+				HeaderOverlay._setOverlayStyle(this, [
+					['width',  wStr], ['min-width',  wStr], ['max-width',  wStr],
+					['height', hStr], ['min-height', hStr], ['max-height', hStr]
+				]);
 			});
 		}, this);
 		// Delay: Apply style
@@ -149,7 +163,7 @@
 		var bounds = this.tuple.main.getBoundingClientRect();
 		// Set X-position
 		var left = bounds.left;
-		var leftStr = left + "px";
+		var leftStr = left + 'px';
 		HeaderOverlay._setOverlayStyle(this.tuple.fixed, [['left', leftStr]]);
 		// Delay: Apply style
 		var apply = (function() {
@@ -186,13 +200,20 @@
 		if (recompute) {
 			this._clearClientRects();
 		}
-		// Show fixed header if the main header starts above the visible area, and there is sufficient visible area in the container to fit the overlay inside
+		// Show fixed header if the main header starts above the visible area,
+		// and there is sufficient visible area in the container to fit the overlay inside
 		if (typeof visible.fixed === 'undefined') {
-			visible.fixed = (this._getClientRect(this.tuple.main).top < 0) && (this._getClientRect(this.tuple.bottom).top > 0);
+			visible.fixed =
+				(this._getClientRect(this.tuple.main  ).top < 0) &&
+				(this._getClientRect(this.tuple.bottom).top > 0);
 		}
-		// Show bottom header if the main header starts above the visible area, and there is insufficient (but non-zero) visible area to fit the overlay inside
+		// Show bottom header if the main header starts above the visible area,
+		// and there is insufficient (but non-zero) visible area to fit the overlay inside
 		if (typeof visible.bottom === 'undefined') {
-			visible.bottom = (this._getClientRect(this.tuple.main).top < 0) && (this._getClientRect(this.tuple.bottom).top <= 0) && (this._getClientRect(this.tuple.bottom).bottom > 0);
+			visible.bottom =
+				(this._getClientRect(this.tuple.main  ).top    <  0) &&
+				(this._getClientRect(this.tuple.bottom).top    <= 0) &&
+				(this._getClientRect(this.tuple.bottom).bottom >  0);
 		}
 		// Set visibility
 		this.tuple.forCopies(function(visible) {
@@ -245,20 +266,25 @@
 	 * Change values of selected attributes in specified header nodes as necessary
 	 */
 	HeaderOverlay.prototype._fixAttributes = function(nodes, attr) {
-		var tuples = (typeof nodes === 'undefined') ?
-			this.tuples :
-			(!nodes ?
-				[] :
-				((!(nodes instanceof Node || nodes instanceof HeaderNodeTuple) || (nodes = [nodes])) &&
-					Array.prototype.map.call(nodes, function(node) {return (node instanceof HeaderNodeTuple) ? node : this.tuples.get(node);}, this))
-			);
+		var tuples;
+		if (typeof nodes === 'undefined') {
+			tuples = this.tuples;
+		} else if (!nodes) {
+			tuples = [];
+		} else {
+			(nodes instanceof Node || nodes instanceof HeaderNodeTuple) && (nodes = [nodes]);
+			tuples = Array.prototype.map.call(nodes, function(node) {
+				return (node instanceof HeaderNodeTuple) ? node : this.tuples.get(node);
+			}, this);
+		}
 		var attrFixes = (typeof attr === 'undefined') ?
 			HeaderOverlay._attributeFixes :
 			((typeof attr !== 'string' || (attr = [attr])) &&
 				Array.prototype.map.call(attr, Map.prototype.get, HeaderOverlay._attributeFixes));
 		tuples.forEach(function(tuple) {
-			if (!tuple || !(tuple.main instanceof Element))
+			if (!tuple || !(tuple.main instanceof Element)) {
 				return;
+			}
 			attrFixes.forEach(function(fn) {(typeof fn === 'function') && fn.call(this, tuple);}, this);
 		}, this);
 	};
@@ -283,8 +309,10 @@
 		['style', function(tuple) {
 			tuple.forCopies(function() {
 				if (this._overlayStyle && !this._overlayStyleApplied) {
-					var overlayStyle = "";
-					this._overlayStyle.forEach(function(value, property) {overlayStyle += ";" + property + ":" + value;});
+					var overlayStyle = '';
+					this._overlayStyle.forEach(function(value, property) {
+						overlayStyle += ';' + property + ':' + value;
+					});
 					this.style.cssText += overlayStyle;
 					this._overlayStyleApplied = true;
 				}
@@ -300,8 +328,9 @@
 		mutations.forEach(function(mutation) {
 			var mNode = mutation.target;
 			var tuple = this.tuples.get(mNode);
-			if (!tuple)
+			if (!tuple) {
 				return;
+			}
 			switch (mutation.type) {
 				case 'attributes':
 					var attrName = mutation.attributeName;
@@ -324,8 +353,9 @@
 					doLayoutUpdate = true;
 					Array.prototype.forEach.call(mutation.removedNodes, function(child) {
 						var cTuple = this.tuples.get(child);
-						if (!cTuple)
+						if (!cTuple) {
 							return;
+						}
 						getAllNodes(cTuple.fixed).forEach(function(fNode) {
 							this.tuples.delete(fNode._original);
 						}, this);
@@ -393,7 +423,8 @@
 			var capture = (typeof entry === 'object') ? Boolean(entry.capture) : false;
 			this.tuple.forCopies(function() {
 				var handlerMap;
-				((handlerMap = this._eventRedirection) instanceof Map) || (handlerMap = this._eventRedirection = new Map());
+				((handlerMap = this._eventRedirection) instanceof Map) ||
+					(handlerMap = this._eventRedirection = new Map());
 				var oldEntry = handlerMap.get(type);
 				if (oldEntry) {
 					if (oldEntry.capture) {
@@ -430,7 +461,9 @@
 		args = (typeof args === 'undefined') ? [] : args;
 		var emptyIdxs = [], resultIdxs = [], i = 0, j = 0, k = 0;
 		for (i = args.length; i--;) {
-			(i in args) ? ((args[i] instanceof HeaderNodeTuple.Results) && (resultIdxs[k++] = i)) : (emptyIdxs[j++] = i);
+			(i in args)
+				? ((args[i] instanceof HeaderNodeTuple.Results) && (resultIdxs[k++] = i))
+				: (emptyIdxs[j++] = i);
 		}
 		var localArgs = args.slice(), results = new HeaderNodeTuple.Results(), key;
 		for (i = keys.length; i--;) {
@@ -446,16 +479,22 @@
 		return results;
 	};
 	HeaderNodeTuple.prototype.forAll = function(action, args) {
-		return this._forSelected(["main", "fixed", "bottom"], action, (args instanceof Array) ? args : Array.prototype.slice.call(arguments, 1));
+		return this._forSelected(
+			['main', 'fixed', 'bottom'],
+			action,
+			(args instanceof Array) ? args : Array.prototype.slice.call(arguments, 1)
+		);
 	};
 	HeaderNodeTuple.prototype.forCopies = function(action, args) {
-		return this._forSelected(["fixed", "bottom"], action, (args instanceof Array) ? args.slice() : Array.prototype.slice.call(arguments, 1));
+		return this._forSelected(
+			['fixed', 'bottom'],
+			action,
+			(args instanceof Array) ? args.slice() : Array.prototype.slice.call(arguments, 1)
+		);
 	};
 	var HeaderOverlays = {
 		create: function(containers, headers, insert, override, suspendMount) {
-			if (!HeaderOverlays.isInitialized)
-				HeaderOverlays.init();
-			
+			HeaderOverlays.isInitialized || HeaderOverlays.init();
 			// If <containers> and <headers> are a single Element, wrap in array, otherwise assume an array-like object
 			if (containers instanceof Element) {
 				containers = [containers];
@@ -483,7 +522,7 @@
 			
 			// Suspend DOM manipulation if requested
 			if (!suspendMount) {
-				mount(overlays);
+				HeaderOverlays.mount(overlays);
 			}
 			
 			return overlays;
@@ -491,13 +530,13 @@
 		isInitialized: false,
 		init: function() {
 			// Update size and location of header overlay when the window is resized
-			window.addEventListener('resize', function(evt) {
+			window.addEventListener('resize', function() {
 				HeaderOverlays.updateSize();
 				HeaderOverlays.updateLocation();
 				HeaderOverlays.updateVisibility();
 			});
 			// Update visibility of header overlay on scrolling
-			window.addEventListener('scroll', function(evt) {
+			window.addEventListener('scroll', function() {
 				var dx = window.pageXOffset - HeaderOverlays._scrollCache.x;
 				var dy = window.pageYOffset - HeaderOverlays._scrollCache.y;
 				HeaderOverlays._scrollCache.x += dx;
@@ -516,13 +555,17 @@
 		_updateHeaders: function(headers, updater) {
 			var queue = [];
 			// Process requested headers, or all if unspecified
-			var overlays = (typeof headers === 'undefined') ?
-				HeaderOverlays.data :
-				(!headers ?
-					[] :
-					((!(headers instanceof Element || headers instanceof HeaderOverlay) || (headers = [headers])) &&
-						Array.prototype.map.call(headers, function(header) {return (header instanceof HeaderOverlay) ? header : HeaderOverlays.data.get(header);}))
-				);
+			var overlays;
+			if (typeof headers === 'undefined') {
+				overlays = HeaderOverlays.data;
+			} else if (!headers) {
+				overlays = [];
+			} else {
+				(headers instanceof Element || headers instanceof HeaderOverlay) && (headers = [headers]);
+				overlays = Array.prototype.map.call(headers, function(header) {
+					return (header instanceof HeaderOverlay) ? header : HeaderOverlays.data.get(header);
+				});
+			}
 			var args = Array.prototype.slice.call(arguments, 2);
 			args.push(queue);
 			overlays.forEach(function(overlay) {

@@ -1,5 +1,5 @@
 /**
-* (c) 2021 Taemporus
+* (c) 2023 Taemporus
 */
 (function() {
 	'use strict';
@@ -61,12 +61,16 @@
 		this.isPaused = false;
 		this.isAborted = false;
 		this.success = void 0;
+		this.failData = void 0;
 	}
 	LoaderEntry.prototype.updateDependency = function(id, newStatus) {
-		if (this.requires.hasOwnProperty(id) && this.reqByStatus.hasOwnProperty(newStatus)) {
+		if (
+			Object.prototype.hasOwnProperty.call(this.requires   , id       ) &&
+			Object.prototype.hasOwnProperty.call(this.reqByStatus, newStatus)
+		) {
 			var status;
 			for (status in this.reqByStatus) {
-				if (this.reqByStatus.hasOwnProperty(status))
+				Object.prototype.hasOwnProperty.call(this.reqByStatus, status) &&
 					delete this.reqByStatus[status][id];
 			}
 			this.reqByStatus[newStatus][id] = this.requires[id];
@@ -76,20 +80,22 @@
 	LoaderEntry.prototype.checkDependencies = function() {
 		var id, reqs;
 		for (id in (reqs = this.reqByStatus[ScriptData.FAILED])) {
-			if (reqs.hasOwnProperty(id) && !reqs[id].soft) {
+			if (Object.prototype.hasOwnProperty.call(reqs, id) && !reqs[id].soft) {
 				this.ready(reqs[id].data);
 				return;
 			}
 		}
 		for (id in (reqs = this.reqByStatus[ScriptData.LOADING])) {
-			if (reqs.hasOwnProperty(id))
+			if (Object.prototype.hasOwnProperty.call(reqs, id)) {
 				return;
+			}
 		}
 		this.ready();
 	};
 	LoaderEntry.prototype.init = function() {
-		if (this.isInitialized || this.isAborted)
+		if (this.isInitialized || this.isAborted) {
 			return;
+		}
 		this.isInitialized = true;
 		if (typeof this._init === 'function') {this._init();}
 		Loader.entries.push(this);
@@ -97,19 +103,22 @@
 		return this;
 	};
 	LoaderEntry.prototype.ready = function(failed) {
-		if (this.isReady || this.isAborted)
+		if (this.isReady || this.isAborted) {
 			return;
+		}
 		this.isReady = true;
 		if (typeof this._ready === 'function') {this._ready(failed);}
 	};
 	LoaderEntry.prototype.finish = function(failData) {
-		if (this.isFinished)
+		if (this.isFinished) {
 			return;
+		}
 		this.isFinished = true;
-		this.success = !failData;
+		this.failData = failData;
+		this.success = !this.failData;
 		if (typeof this._finish === 'function') {this._finish(failData);}
 		try {
-			this.callback.call(this, {success: this.success, failData: (this.success ? void 0 : failData)});
+			this.callback.call(this, {success: this.success, failData: (this.success ? void 0 : this.failData)});
 		} catch (err) {
 			try {window.console.error(err);} catch (e) {}
 		}
@@ -139,7 +148,7 @@
 		this.status = ScriptData.LOADING;
 		this.requiredBy = [];
 		Loader.entries.forEach(function(entry) {
-			if (entry.requires.hasOwnProperty(this.id)) {
+			if (Object.prototype.hasOwnProperty.call(entry.requires, this.id)) {
 				this.requiredBy.push(entry);
 				entry.requires[this.id].data = this;
 				entry.updateDependency(this.id, this.status);
@@ -159,9 +168,9 @@
 		Loader.scripts[this.id] = this;
 	};
 	ScriptData.prototype._ready = function(failed) {
-		if (failed)
+		if (failed) {
 			this.finish(failed);
-		else {
+		} else {
 			if (this.preloader) {
 				this.preloader.pause();
 				this.sourceIndex = this.preloader.sourceIndex;
@@ -181,10 +190,10 @@
 			node.id = this.id;
 			node.async = this.async;
 			node.defer = this.defer;
-			node.addEventListener('load', function(evt) {
+			node.addEventListener('load', function() {
 				thisObj.finish();
 			});
-			node.addEventListener('error', function(evt) {
+			node.addEventListener('error', function() {
 				thisObj.sourceIndex++;
 				thisObj.attachNode();
 			});
@@ -238,6 +247,8 @@
 			try {
 				this.execute();
 			} catch (err) {
+				this.failData = this;
+				this.success = false;
 				try {window.console.error(err);} catch (e) {}
 			}
 		}
@@ -262,10 +273,7 @@
 		Loader.resources.push(this);
 	};
 	ResourceData.prototype._ready = function(failed) {
-		if (failed)
-			this.finish(failed);
-		else
-			this.attachNode();
+		failed ? this.finish(failed) : this.attachNode();
 	};
 	ResourceData.prototype.attachNode = function() {
 		if (this.isPaused) {
@@ -276,12 +284,12 @@
 		if (this.sourceIndex < this.sources.length) {
 			var node = document.createElement('link');
 			node.rel = 'preload';
-			node.as = 'script';
+			node.as = this.type;
 			node.href = String(this.sources[this.sourceIndex]);
-			node.addEventListener('load', function(evt) {
+			node.addEventListener('load', function() {
 				thisObj.finish();
 			});
-			node.addEventListener('error', function(evt) {
+			node.addEventListener('error', function() {
 				thisObj.sourceIndex++;
 				thisObj.attachNode();
 			});
