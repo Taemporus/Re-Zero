@@ -1,0 +1,26 @@
+{
+	"name": "Re:Zero Season 2",
+	"short_name": "Re:Zero",
+	"start_url": ".",
+	"icons": [
+		{
+			"src": "img/icons/android-chrome-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "img/icons/android-chrome-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "img/icons/maskable-icon.png",
+			"sizes": "256x256",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	],
+	"theme_color": "#200080",
+	"background_color": "#200080",
+	"display": "standalone"
+}

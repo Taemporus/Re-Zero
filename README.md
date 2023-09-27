@@ -1,16 +1,14 @@
 # Re:Zero Season 2 — Anime Watchers’ Guide
 
-## Visit the site: https://taemporus.github.io/Re-Zero/
+## Visit the site: [https://taemporus.github.io/Re-Zero/](https://taemporus.github.io/Re-Zero/)
 
-## Build instructions
+## Build
 
-After modifying the configuration in `package.json` or the source files in `css/src` or `js/src`, perform the following steps to regenerate the required CSS and JS files:
+After modifying the configuration in `package.json` or the source files in `src`, perform the following steps to regenerate the required files:
 
-1. Make sure **Node.js** is installed on the system.
-2. Install **Gulp** via `npm install -g gulp-cli` (if not already installed).
-3. In the repository’s base directory, run `npm install` to get the required modules.
-4. Run `gulp build` to generate the CSS and JS files.
-5. Copy the code from `js/loader.min.js` into the `<script id="script_loader">` element in `index.html`.
+0. Required software: **Node.js** (18+), **ImageMagick** (7+), **OxiPNG** (8+) (make sure the binaries are in your `PATH`).
+1. In the repository’s base directory, run `npm install` to get the required modules (repeat each time the dependencies in `package.json` are modified).
+2. Execute `npm run build` to generate the files. The constituent tasks of this build process may be listed with `npm run tasks`, and executed individually using the `npm run build [TASK]...` syntax. The `build-dev` argument may be used in place of `build` to skip the more time consuming optimizations.
 
 ## Credits
 

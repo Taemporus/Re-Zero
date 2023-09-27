@@ -1,0 +1,15 @@
+{
+	"globals": {
+		"Collapsibles": "readonly",
+		"FocusWithin": "readonly",
+		"GoTo": "readonly",
+		"HeaderOverlays": "readonly",
+		"Loader": "readonly",
+		"Navigation": "readonly",
+		"NumberInputs": "readonly",
+		"Spoilers": "readonly",
+		"PseudoButtons": "readonly",
+		"Tooltips": "readonly",
+		"TouchDetector": "readonly"
+	}
+}

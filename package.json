@@ -1,6 +1,11 @@
 {
-	"name": "Re-Zero",
-	"version": "1.1.0",
+	"name": "re-zero",
+	"author": "Taemporus",
+	"version": "1.1.1",
+	"private": true,
+	"engines": {
+		"node": ">=18.0.0"
+	},
 	"devDependencies": {
 		"@popperjs/core": "^2.11.8",
 		"animejs": "^3.2.1",
@@ -8,29 +13,48 @@
 		"cssnano": "^6.0.1",
 		"eslint": "^8.50.0",
 		"eslint-plugin-html": "^7.1.0",
+		"esm": "^3.2.25",
 		"focus-visible": "^5.2.0",
 		"gulp": "^4.0.2",
 		"gulp-concat": "^2.6.1",
+		"gulp-eol": "^0.2.0",
 		"gulp-modernizr": "^5.0.0",
 		"gulp-postcss": "^9.0.1",
+		"gulp-prettier": "^5.0.0",
 		"gulp-rename": "^2.0.0",
 		"gulp-replace": "^1.1.4",
 		"gulp-sass": "^5.1.0",
 		"gulp-sourcemaps": "^3.0.0",
 		"gulp-svgmin": "^4.1.0",
 		"gulp-uglify": "^3.0.2",
+		"image-size": "^1.0.2",
+		"merge2": "^1.4.1",
 		"modernizr": "^3.13.0",
 		"normalize.css": "^8.0.1",
+		"parse5-html-rewriting-stream": "^7.0.0",
 		"polyfill-library": "^4.8.0",
 		"postcss": "^8.4.30",
 		"postcss-html": "^1.5.0",
 		"postcss-scss": "^4.0.8",
+		"prettier": "^3.0.3",
 		"sass": "^1.68.0",
 		"scrollingelement": "^1.5.2",
 		"stylelint": "^15.10.3",
 		"stylelint-config-recommended": "^13.0.0",
 		"stylelint-config-recommended-scss": "^13.0.0",
-		"tippy.js": "^6.3.7"
+		"tippy.js": "^6.3.7",
+		"tmp-promise": "^3.0.3",
+		"uglify-js": "^3.17.4",
+		"vinyl-buffer": "^1.0.1",
+		"vinyl-source-stream": "^2.0.0",
+		"yargs": "^17.7.2"
+	},
+	"scripts": {
+		"lint:script": "eslint --ext js,mjs,html .",
+		"lint:style" : "stylelint src/**/*.css src/**/*.scss src/**/*.html",
+		"build"    : "gulp --dev false",
+		"build-dev": "gulp --dev true",
+		"tasks"    : "gulp --tasks"
 	},
 	"browserslist": [
 		"defaults",
@@ -45,7 +69,7 @@
 			"/docs",
 			"/misc",
 			"/node_modules",
-			"/gulpfile.js"
+			"/gulpfile.mjs"
 		],
 		"plugins": [
 			"html"
